@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="taskerRecharge" class="theme-black">
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/header/header.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/menu/menu.html?__inline">
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+
+        <div class="container-fluid am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                    <div class="page-header-heading">
+                        <span class="am-icon-warning page-header-heading-icon"></span>
+                        提示 <small>充值必看</small>
+                    </div>
+                    <p class="page-header-description">
+                        1、支付宝账号：vip990011@qq.com支付宝名称：李青青 <br/>
+                        2、通过支付宝进行转账，请核对收款名称与支付宝名称是否与上面一致。<br/>
+                        3、转账完成后，点击付款页面的“查看详情”，记录下 32 位的交易号。<br/>
+                        4、输入交易号，稍等 30 秒即可自动入账。<br/>
+                        5、如果付款后提示交易号无法充值，请提交问题反馈。<br/><br/>
+                        <span class="tips">注意： 交易号当天有效（晚上十二点之前），第二天提交会自动过期。</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-content am-cf">
+
+            <div class="row">
+
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl"><%=title%></div>
+                        </div>
+                        <div id="recharge" class="widget-body am-fr">
+
+                            <validator name="recharge">
+                                <form class="am-form tpl-form-border-form tpl-form-border-br">
+                                    <div class="am-form-group">
+                                        <label for="taskAddress" class="am-u-sm-4 am-u-lg-2 am-form-label">
+                                            <span class="tips" v-if="$recharge.num.required">* </span>
+                                            支付宝交易号
+                                        </label>
+                                        <div class="am-u-sm-8 am-u-lg-10">
+                                            <input id="taskAddress" class="am-radius am-input-sm" type="text" placeholder="输入 32 位的支付宝交易号"
+                                                   v-validate:num="{required: true, minlength: 32, maxlength: 32, isnum: true}" v-model="num">
+                                            <span class="tips" v-if="$recharge.num.required">支付宝交易号不能为空!</span>
+                                            <span class="tips" v-if="$recharge.num.minlength || $recharge.num.maxlength || $recharge.num.isnum">请输入合法的支付宝交易号!</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-lg-10 am-u-lg-offset-2">
+                                            <button class="am-btn am-btn-primary am-radius" v-if="$recharge.valid" @click.stop.prevent="commit">立即充值</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </validator>                     
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    require('./recharge');
+</script>
+
+</body>
+</html>

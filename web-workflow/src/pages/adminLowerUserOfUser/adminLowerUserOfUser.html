@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body class="theme-black">
+
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/adminHeader/adminHeader.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/adminMenu/adminMenu.html?__inline">
+
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title  am-cf"><%=title%></div>
+                        </div>
+                        <div class="widget-body  am-fr">
+
+                            <div class="am-u-sm-12 am-scrollable-horizontal">
+                                <table width="100%" class="am-table am-text-nowrap am-table-striped tpl-table-black">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>创建时间</th>
+                                        <th>等级</th>
+                                        <th>用户名</th>
+                                        <th>状态</th>
+                                        <th>余额</th>
+                                        <th>上级</th>
+                                        <th>下级/人</th>
+                                        <th>最后登陆时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <% for(var i = 0; i < users.length; i++) { %>
+                                    <tr>
+                                        <td><%= i + 1 %></td>
+                                        <td><%= users[i].createTime %></td>
+                                        <td><%= users[i].roleName %></td>
+                                        <td><%= users[i].username %></td>
+                                        <td><%= users[i].status %></td>
+                                        <td>
+                                            <a href="/admin/search/user/recharge?userId=<%= users[i]._id %>">
+                                                ￥ <%= users[i].funds %>
+                                            </a>
+                                        </td>
+                                        <td ><%= users[i].parent %></td>
+                                        <td >
+                                            <a href="/admin/lowerUsers/of/user?userId=<%= users[i]._id %>">
+                                                <%= users[i].childNum %>
+                                            </a>
+                                        </td>
+                                        <td><%= users[i].lastLoginTime %></td>
+                                        <td>
+                                            <a type="button" class="am-btn am-btn-primary am-radius am-btn-xs"
+                                               href="/admin/manage/user/edit?id=<%= users[i]._id %>">编辑</a>
+                                            <a type="button" class="am-btn am-btn-danger am-radius am-btn-xs"
+                                               href="/admin/manage/user/del?id=<%= users[i]._id %>"
+                                               onclick="return confirm('确认删除该用户吗？');">删除</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    require('adminMenu');
+</script>
+
+</body>
+</html>

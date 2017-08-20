@@ -1,0 +1,74 @@
+<!-- 侧边导航栏 -->
+<div class="left-sidebar">
+    <!-- 用户信息 -->
+    <div class="tpl-sidebar-user-panel">
+        <div class="tpl-user-panel-slide-toggleable">
+            <div class="tpl-user-panel-profile-picture">
+                <img src="/static/images/user04.png" alt="">
+            </div>
+            <span class="user-panel-logged-in-text">
+                <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+                <%= user.vipTime %>
+            </span>
+            <a href="/user/info" class="tpl-user-panel-action-link">
+                <span class="am-icon-pencil"></span> 账户详情
+            </a>
+        </div>
+    </div>
+
+    <!-- 菜单 -->
+    <ul class="sidebar-nav">
+
+        <!--VIP免费看电影-->
+        <li class="sidebar-nav-link">
+            <a id="vipVideo" href="/user/vip/video" target="_blank">
+                <i class="am-icon-video-camera sidebar-nav-link-logo"></i> VIP电影
+            </a>
+        </li>
+
+        <li class="sidebar-nav-link">
+            <a id="taskerHome" href="/tasker/home">
+                <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+            </a>
+        </li>
+
+        <li class="sidebar-nav-link">
+            <a id="taskerRecharge" href="/user/recharge">
+                <i class="am-icon-home sidebar-nav-link-logo"></i> 充值
+            </a>
+        </li>
+
+        <li class="sidebar-nav-link">
+            <a id="withdraw" href="/user/withdraw">
+                <i class="am-icon-home sidebar-nav-link-logo"></i> 提现
+            </a>
+        </li>
+
+        <li class="sidebar-nav-link">
+            <a href="javascript:;" class="sidebar-nav-sub-title">
+                <i class="am-icon-list-ul sidebar-nav-link-logo"></i> 下级管理
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+            </a>
+            <ul class="sidebar-nav sidebar-nav-sub">
+                <li class="sidebar-nav-link">
+                    <a id="lowerUser" href="/user/lowerUser">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 下级推广
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a id="lowerUserProfit" href="/user/lowerUser/profit">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 下级返利
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="sidebar-nav-link">
+            <a id="feedback" href="/user/feedback">
+                <i class="am-icon-question-circle sidebar-nav-link-logo"></i> 问题反馈
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>

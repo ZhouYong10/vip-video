@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="withdraw" class="theme-black">
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/header/header.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/menu/menu.html?__inline">
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+
+        <div class="container-fluid am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                    <div class="page-header-heading">
+                        <span class="am-icon-warning page-header-heading-icon"></span>
+                        提示 <small>提现必看</small>
+                    </div>
+                    <p class="page-header-description">
+                        1、提现金额不能小于５元。<br/>
+                        2、平台用户提现支付宝必须和充值支付宝一致，否则平台不受理（投手提现不受此限制）。<br/>
+                        3、提现支付宝昵称请填实名（个别支付宝用户需要实名验证，敬请谅解），否则支付宝无法转账。<br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-content am-cf">
+
+            <div class="row">
+
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl"><%=title%></div>
+                        </div>
+                        <div id="withdrawAdd" class="widget-body am-fr">
+
+                            <validator name="withdraw">
+                                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="/user/withdraw/add">
+                                    <div class="am-form-group">
+                                        <label for="fansID" class="am-u-sm-4 am-u-lg-2 am-form-label"><span class="tips">* </span>提现金额</label>
+                                        <div class="am-u-sm-8 am-u-lg-10">
+                                            <input type="hidden" value="<%= user.funds %>" v-model="userFunds">
+                                            <input id="fansID" class="am-radius am-input-sm" type="text"
+                                                   placeholder="请填写提现金额，为保证提现成功，尽量提取正整数。" name="funds"
+                                                   v-validate:funds="{required: true, isfloat: true, mintotal: true, mustOne: true}">
+                                            <span class="tips" v-if="$withdraw.funds.required">提现金额不能为空!</span>
+                                            <span class="tips" v-if="$withdraw.funds.mustOne">提现金额不能少于５元!</span>
+                                            <span class="tips" v-if="$withdraw.funds.isfloat">请输入合法的提现金额!</span>
+                                            <span class="tips" v-if="$withdraw.funds.mintotal">您的账户当前没有这么多资金!</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="fansNum" class="am-u-sm-4 am-u-lg-2 am-form-label"><span class="tips">* </span>支付宝账户</label>
+                                        <div class="am-u-sm-8 am-u-lg-10">
+                                            <input id="fansNum" class="am-radius am-input-sm" type="text"
+                                                   placeholder="请填写要提现的支付宝账户，务必核对正确！" name="alipayCount"
+                                                   v-validate:alipaycount="{required: true}">
+                                            <span class="tips" v-if="$withdraw.alipaycount.required">支付宝账户不能为空!</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="replyNum" class="am-u-sm-4 am-u-lg-2 am-form-label"><span class="tips">* </span>支付宝昵称</label>
+                                        <div class="am-u-sm-8 am-u-lg-10">
+                                            <input id="replyNum" class="am-radius am-input-sm" type="text"
+                                                   placeholder="请填写要提现的支付宝账户昵称，务必核对正确！" name="alipayName"
+                                                   v-validate:alipayname="{required: true}">
+                                            <span class="tips" v-if="$withdraw.alipayname.required">账户昵称不能为空!</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-lg-10 am-u-lg-offset-2">
+                                            <button type="submit" class="am-btn am-btn-primary am-radius"
+                                                    v-if="$withdraw.valid">确认提现</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </validator>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script>
+    require('withdrawAdd');
+</script>
+
+</body>
+</html>

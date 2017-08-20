@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-validate="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="lowerUserProfit" class="theme-black">
+
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/header/header.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/menu/menu.html?__inline">
+
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title  am-cf">文章列表</div>
+                        </div>
+                        <div class="widget-body  am-fr">
+                            <div id="searchForm" class="am-form am-form-inline">
+                                <validator name="search">
+                                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                        <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                            <form id="search" method="get" action="/user/search/lowerUser/profit">
+                                                <input id="rechargeTime" type="text" class="am-form-field am-input-sm am-radius"
+                                                       name="createTime" placeholder="点击选择消费日期" style="height:33px;"
+                                                       onclick="laydate({istime: false, format: 'YYYY-MM-DD'})"
+                                                       v-validate:createTime="{required: true}">
+                                            </form>
+                                        <span class="am-input-group-btn">
+                                            <button form="search" v-if="$search.valid"
+                                                    class="am-btn am-btn-default am-btn-success
+                                                    tpl-table-list-field am-icon-search"></button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </validator>
+                                <div class="totalProfit" style="float: right;">总计： ￥<%= totalProfit %></div>
+                            </div>
+
+                            <div class="am-u-sm-12 am-scrollable-horizontal">
+                                <table width="100%" class="am-table am-text-nowrap am-table-striped tpl-table-black">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>时间</th>
+                                        <th>用户</th>
+                                        <th>类型</th>
+                                        <th>标题</th>
+                                        <th>返利金额</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <% for(var i = 0; i < profits.length; i ++ ){ %>
+                                    <tr class="<% if(profits[i].status == 'refund'){ %> am-danger <% } %>">
+                                        <td><%= i + 1 %></td>
+                                        <td><%= profits[i].createTime %></td>
+                                        <td><%= profits[i].childName %></td>
+                                        <td><%= profits[i].typeName %></td>
+                                        <td>
+                                            <a class="am-text-truncate text-break" title="<%= profits[i].title %>">
+                                                <%= profits[i].title %>
+                                            </a>
+                                        </td>
+                                        <td>￥ <%= profits[i].price %></td>
+                                    </tr>
+                                    <% } %>
+
+                                    </tbody>
+                                </table>
+
+                                <input type="hidden" value="<%= pages %>" id="pages">
+                                <div id="laypage"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/plugins/layer/layer.js"></script>
+<script src="/static/plugins/laypage/laypage.js"></script>
+<script src="/static/plugins/laydate/laydate.js"></script>
+
+<script>
+    require('lowerUserProfit');
+</script>
+
+</body>
+</html>
+
+

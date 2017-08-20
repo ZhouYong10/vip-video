@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+    <style>
+        .user-info{
+            padding: 5px 0 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body class="theme-black">
+
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/adminHeader/adminHeader.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/adminMenu/adminMenu.html?__inline">
+
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl"><%= title %></div>
+                        </div>
+                        <div class="widget-body am-fr">
+                            <form id="userInfo" class="am-form tpl-form-border-form tpl-form-border-br"
+                                  method="post" action="/admin/manage/user/edit">
+                                <input type="hidden" value="<%= user._id %>" name="id">
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        账户名
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.username %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        密码
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <button class="am-btn am-btn-primary am-radius am-btn-xs" id="resetPassword">重置</button>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        账户余额
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-radius am-input-sm" type="text" id="funds"
+                                               name="funds" value="<%= user.funds %>">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        冻结金额
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-radius am-input-sm" type="text" id="freezeFunds"
+                                               name="freezeFunds" value="<%= user.freezeFunds %>">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        账号状态
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <select id="status" class="am-radius am-input-sm" name="status" style="color: #999;">
+                                            <option value="正常" <% if(user.status === '正常'){ %> selected <% } %>>正常</option>
+                                            <option value="冻结" <% if(user.status === '冻结'){ %> selected <% } %>>冻结</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="am-form-group" style="display: none">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        VIP电影
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <select id="vipshow" class="am-radius am-input-sm" name="vipshow" style="color: #999;">
+                                            <option value="true"
+                                            <% if(user.vipshow && user.vipshow == 'true'){ %> selected <% } %>>显示</option>
+                                            <option value="false"
+                                            <% if(!user.vipshow || user.vipshow == 'false'){ %> selected <% } %>>隐藏</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="am-form-group" style="display: none">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        VIP日期
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input id="viptime" type="text" class="am-input-sm am-radius"
+                                               name="viptime" value="<%= user.viptime %>" placeholder="选择VIP日期"
+                                               onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        等级
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.roleName %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        上级
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.parent %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        下级/人
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.childNum %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label  class="am-u-sm-4 am-form-label">
+                                        注册时间
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.createTime %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        最后登陆时间
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.lastLoginTime %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        ＱＱ
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-radius am-input-sm" type="text" id="qq"
+                                               name="qq" value="<%= user.qq %>">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        电话
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-radius am-input-sm" type="text" id="phone"
+                                               name="phone" value="<%= user.phone %>">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        邮箱
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-radius am-input-sm" type="email" id="email"
+                                               name="email" value="<%= user.email %>">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <div class="am-u-sm-8 am-u-sm-push-4">
+                                        <button type="submit" class="am-btn am-btn-primary am-radius">保存</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/plugins/layer/layer.js"></script>
+<script src="/static/plugins/laydate/laydate.js"></script>
+
+<script>
+    require('adminMenu');
+    require('adminManageUserEdit');
+</script>
+
+</body>
+</html>

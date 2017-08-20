@@ -1,0 +1,97 @@
+<!-- 侧边导航栏 -->
+<div class="left-sidebar">
+    <!-- 用户信息 -->
+    <div class="tpl-sidebar-user-panel">
+        <div class="tpl-user-panel-slide-toggleable">
+            <div class="tpl-user-panel-profile-picture">
+                <img src="/static/images/user04.png" alt="">
+            </div>
+            <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              ￥<%= money %>
+            </span>
+            <a href="/admin/manage/user" class="tpl-user-panel-action-link active">
+                <span class="am-icon-pencil"></span> 用户管理
+            </a>
+        </div>
+    </div>
+
+    <!-- 菜单 -->
+    <ul class="sidebar-nav">
+        <li class="sidebar-nav-link">
+            <a id="adminHome" href="/admin/home">
+                <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="javascript:;" class="sidebar-nav-sub-title">
+                <i class="am-icon-table sidebar-nav-link-logo"></i> 问题反馈
+                <span class="tips feedback">
+                    <strong>*</strong>
+                </span>
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+            </a>
+            <ul class="sidebar-nav sidebar-nav-sub">
+                <li class="sidebar-nav-link">
+                    <a id="adminFeedbackWait" href="/admin/feedback/wait">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 待处理
+                        <span class="am-badge am-badge-warning am-round item-feed-badge updateNum feedback">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a id="adminFeedbackAlre" href="/admin/feedback/already">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 已处理
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="javascript:;" class="sidebar-nav-sub-title">
+                <i class="am-icon-table sidebar-nav-link-logo"></i> 公告管理
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+            </a>
+            <ul class="sidebar-nav sidebar-nav-sub">
+                <li class="sidebar-nav-link">
+                    <a id="adminPlacardSend" href="/admin/placard/send">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 发布公告
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a id="adminPlacardHistory" href="/admin/placard/history">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 历史公告
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="javascript:;" class="sidebar-nav-sub-title">
+                <i class="am-icon-table sidebar-nav-link-logo"></i> 资金管理
+                <span class="tips recharge withdraw">
+                    <strong>*</strong>
+                </span>
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+            </a>
+            <ul class="sidebar-nav sidebar-nav-sub">
+                <li class="sidebar-nav-link">
+                    <a id="adminRecharge" href="/admin/recharge">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 充值记录
+                        <span class="am-badge am-badge-warning am-round item-feed-badge updateNum recharge">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a id="adminWithdrawWait" href="/admin/withdraw/wait">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 待提现
+                        <span class="am-badge am-badge-warning am-round item-feed-badge updateNum withdraw">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a id="adminWithdrawAlre" href="/admin/withdraw/already">
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 提现记录
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>

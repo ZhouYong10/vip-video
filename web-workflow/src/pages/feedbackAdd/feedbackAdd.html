@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="feedback" class="theme-black">
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/header/header.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/menu/menu.html?__inline">
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+
+        <div class="container-fluid am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                    <div class="page-header-heading">
+                        <span class="am-icon-warning page-header-heading-icon"></span>
+                        提示 <small>反馈必看</small>
+                    </div>
+                    <p class="page-header-description">
+                        1、任务报错请提交任务链接、差量多少、以及错误描述，否则平台无法受理。<br/>
+                        2、充值交易号过期，请提交充值支付宝账户、昵称，以及充值交易号，否则平台无法受理。<br/>
+                        3、同一问题请不要频繁重复提交。<br/>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-content am-cf">
+
+            <div class="row">
+
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl"><%=title%></div>
+                        </div>
+                        <div id="feedbackAdd" class="widget-body am-fr">
+
+                            <validator name="feedbackAdd">
+                                <form class="am-form  tpl-form-border-form tpl-form-border-br" method="post" action="/user/feedback/add">
+
+                                    <div class="am-form-group">
+                                        <label for="user-remark" class="am-u-sm-12 am-form-label am-text-left">
+                                            <span class="tips" v-if="$feedbackAdd.feedback.required">* </span>
+                                            欢迎对本平台提出修改指正意见
+                                        </label>
+                                        <div class="am-u-sm-12">
+                                <textarea id="user-remark" class="am-radius" rows="3" placeholder="请将反馈信息填入以下区域"
+                                          v-validate:feedback="{required: true}" name="content"></textarea>
+                                            <span class="tips" v-if="$feedbackAdd.feedback.required">反馈信息不能为空！</span>
+                                            <!--<span class="tips" v-if="$feedbackAdd.feedback.minlength">反馈信息内容不能少于10个字符！</span>-->
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-12">
+                                            <button type="submit" class="am-btn am-btn-primary am-radius am-btn-sm"
+                                                    v-if="$feedbackAdd.valid">提交反馈</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </validator>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+
+<script>
+    require('feedbackAdd');
+</script>
+
+</body>
+</html>

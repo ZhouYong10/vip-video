@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="lowerUser" class="theme-black">
+
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/header/header.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/menu/menu.html?__inline">
+
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title  am-cf">文章列表</div>
+                        </div>
+                        <div class="widget-body am-fr tpl-form-border-form tpl-form-border-br">
+                            <div id="searchForm" class="am-form am-form-inline">
+                                <validator name="search">
+                                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                        <div class="am-input-group am-input-group-sm cl-p">
+                                            <form id="search" method="get" action="/user/search/lowerUser"">
+                                                <input id="taskName" type="text" class="am-form-field am-input-sm am-radius"
+                                                       name="account" placeholder="用户名(支持模糊查询)" style="height:33px;"
+                                                       v-validate:account="{required: true}">
+                                            </form>
+                                        <span class="am-input-group-btn">
+                                            <button form="search" v-if="$search.valid"
+                                                    class="am-btn am-btn-default am-btn-success
+                                                    tpl-table-list-field am-icon-search"></button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </validator>
+                                <div class="am-form-group am-g-collapse">
+                                    <div>
+                                        推广链接：　通过此链接注册的用户即为我的下级用户。
+                                    </div>
+                                    <div class="am-u-sm-8">
+                                        <input class="am-form-field am-input-sm am-radius" type="text"
+                                               value="<%= invitation %>">
+                                    </div>
+                                    <div class="am-u-sm-4">
+                                        <a class="clipboard am-btn am-btn-primary am-radius am-btn-sm"
+                                           title="通过此链接注册的用户即为我的下级用户。"
+                                           data-clipboard-text="<%= invitation %>">复制</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="am-u-sm-12 am-scrollable-horizontal">
+                                <table width="100%" class="am-table am-text-nowrap am-table-striped tpl-table-black">
+                                    <thead>
+                                    <tr>
+                                        <th>账号</th>
+                                        <th>创建时间</th>
+                                        <th>角色</th>
+                                        <th>余额</th>
+                                        <th>下线/人</th>
+                                        <th>最后登陆时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <% for(var i = 0; i < users.length; i++){ %>
+                                    <tr>
+                                        <td><%= users[i].username %></td>
+                                        <td><%= users[i].createTime %></td>
+                                        <td><%= users[i].roleName %></td>
+                                        <td>￥ <%= users[i].funds %></td>
+                                        <td><%= users[i].childNum %></td>
+                                        <td><%= users[i].lastLoginTime %></td>
+                                    </tr>
+                                    <% } %>
+
+                                    </tbody>
+                                </table>
+
+                                <input type="hidden" value="<%= pages %>" id="pages">
+                                <div id="laypage"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/js/clipboard.js"></script>
+<script src="/static/plugins/layer/layer.js"></script>
+<script src="/static/plugins/laypage/laypage.js"></script>
+
+<script>
+    require('lowerUser');
+</script>
+
+</body>
+</html>

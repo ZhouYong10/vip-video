@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-validate="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+
+</head>
+
+<body data-type="login" class="theme-black">
+
+<div class="am-g tpl-g">
+
+    <div id="login" class="tpl-login">
+        <div class="tpl-login-content">
+            <div class="tpl-login-title">注册用户</div>
+                <span v-if="noInvitation" class="tpl-login-content-info" style="color: red;">
+                  暂不支持自由注册，需通过推广链接注册！如果没有推广链接，请联系平台管理员！
+              </span>
+
+            <form class="am-form tpl-form-line-form">
+                <div class="am-form-group">
+                    <input id="username" type="text" class="tpl-form-input" placeholder="用户名"
+                           @focus="closeTips" v-model="username">
+                </div>
+
+                <div class="am-form-group">
+                    <input id="password" type="password" class="tpl-form-input" placeholder="请输入密码"
+                           @focus="closeTips" v-model="password">
+                </div>
+
+                <div class="am-form-group">
+                    <input id="repassword" type="password" class="tpl-form-input" placeholder="再次输入密码"
+                           @focus="closeTips" v-model="repassword">
+                </div>
+
+                <div class="am-form-group">
+                    <input id="qq" type="text" class="tpl-form-input" placeholder="请输入ＱＱ号"
+                           @focus="closeTips" v-model="qq">
+                </div>
+
+                <div class="am-form-group am-g-collapse">
+                    <div class="am-u-sm-5">
+                        <input id="securityCode" type="text" class="am-form-field" placeholder="不区分大小写"
+                               @focus="closeTips" v-model="securityCode">
+                    </div>
+                    <div class="am-u-sm-7">
+                        <img class="am-img-responsive getSecurityCode" src="/securityImg" @click.stop.prevent="changeImg"/>
+                    </div>
+                </div>
+
+                <div class="am-form-group tpl-login-remember-me">
+                    <input id="readme" name="readme" type="checkbox" v-model="readme" @focus="closeTips">
+                    <label>
+                        我已阅读并同意 <a href="/sign/readme" target="_blank">《用户注册协议》</a>
+                    </label>
+
+                </div>
+
+                <div class="am-form-group">
+
+                    <button type="button" class="am-btn am-btn-primary  am-btn-block tpl-btn-bg-color-success  tpl-login-btn"
+                            @click.stop.prevent="onSignIn">提交</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+<script src="/static/plugins/layer/layer.js"></script>
+
+<script>
+    require(['signIn']);
+</script>
+
+</body>
+</html>

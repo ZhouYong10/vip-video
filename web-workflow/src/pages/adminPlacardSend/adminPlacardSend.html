@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title><%=title%></title>
+
+    <link rel="import" href="../../components/head/head.html?__inline">
+</head>
+
+<body data-type="adminPlacardSend" class="theme-black">
+<div class="am-g tpl-g">
+    <!-- 头部 -->
+    <link rel="import" href="../../components/adminHeader/adminHeader.html?__inline">
+    <!-- 侧边导航栏 -->
+    <link rel="import" href="../../components/adminMenu/adminMenu.html?__inline">
+
+    <!-- 内容区域 -->
+    <div class="tpl-content-wrapper">
+
+        <div class="row-content am-cf">
+
+            <div class="row">
+
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl"><%=title%></div>
+                        </div>
+                        <div id="placard" class="widget-body am-fr">
+
+                            <validator name="placard">
+                                <form class="am-form tpl-form-border-form tpl-form-border-br" method="post" action="/admin//placard/send">
+                                    <div class="am-form-group">
+                                        <label for="fansCity" class="am-u-sm-4 am-u-lg-2 am-form-label">公告类型</label>
+                                        <div class="am-u-sm-8 am-u-lg-5 am-u-end">
+                                            <select id="fansCity" class="am-radius am-input-sm" name="type" style="color: #999;">
+                                                <option value="systemPlacard">系统公告</option>
+                                                <option value="taskerPlacard">发布者公告</option>
+                                                <option value="handerPlacard">任务者公告</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="fansRemark" class="am-u-sm-4 am-u-lg-2 am-form-label">
+                                            <span class="tips" v-if="$placard.content.required">* </span>
+                                            公告内容
+                                        </label>
+                                        <div class="am-u-sm-8 am-u-lg-10">
+                                            <textarea id="fansRemark" class="am-radius" rows="3" name="placardContent" placeholder="输入公告内容" v-validate:content="['required']"></textarea>
+                                            <span class="tips" v-if="$placard.content.required">公告内容不能为空!</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-lg-10 am-u-lg-offset-2">
+                                            <button type="submit" class="am-btn am-btn-primary am-radius" v-if="$placard.valid">发布公告</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </validator>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="import" href="../../components/foot/foot.html?__inline">
+
+<!--import plugin-->
+
+
+<script>
+    require('adminMenu');
+    require('adminPlacardSend');
+</script>
+
+</body>
+</html>
