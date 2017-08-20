@@ -2,14 +2,11 @@
  * Created by zhouyong10 on 1/24/16.
  */
 var User = require('../models/User');
-var Order = require('../models/Order');
 var Feedback = require('../models/Feedback');
 var Recharge = require('../models/Recharge');
 var Withdraw = require('../models/Withdraw');
 var Profit = require('../models/Profit');
 var Consume = require('../models/Consume');
-var Product = require('../models/Product');
-var Task = require('../models/Task');
 var Utils = require('../models/Utils');
 var router = require('express').Router();
 var request = require('request');
@@ -24,20 +21,14 @@ var moment = require('moment');
 router.get('/vip/video', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            if(user.vipshow && user.vipshow == 'true'){
-                if(user.viptime) {
-                    var vipTime = Date.parse(user.viptime);
-                    var nowTime = new Date().getTime();
-                    if(vipTime - nowTime > 0){
-                        res.render('vip');
-                    }else{
-                        res.send('您的VIP电影会员已到期！');
-                    }
-                }else{
-                    res.send('您不是VIP电影会员！');
-                }
+            var vipTime = Date.parse(user.vipTime);
+            var nowTime = new Date().getTime();
+            if(vipTime - nowTime > 0){
+                res.render('vip',  {
+                    user: user
+                });
             }else{
-                res.send('您不是VIP电影会员！');
+                res.redirect('/user/recharge?msg=' + encodeURIComponent('您的VIP电影会员已过期，请充值！'));
             }
         });
 });
@@ -47,73 +38,32 @@ router.get('/vip/video/teach', function (req, res) {
 });
 
 router.get('/vip/video/url', function (req, res) {
-    var msg = '您的VIP电影会员已到期！';
-    var address = 'http://www.wmxz.wang/video.php?url=';
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            if(user.vipshow && user.vipshow == 'true'){
-                if(user.viptime) {
-                    var vipTime = Date.parse(user.viptime);
-                    var nowTime = new Date().getTime();
-                    if(vipTime - nowTime > 0){
-                        res.send({
-                            isOk: true,
-                            address: address
-                        });
-                    }else{
-                        res.send({
-                            isOk: false,
-                            msg: msg
-                        });
-                    }
-                }else{
-                    res.send({
-                        isOk: false,
-                        msg: msg
-                    });
-                }
+            var vipTime = Date.parse(user.vipTime);
+            var nowTime = new Date().getTime();
+            if(vipTime - nowTime > 0){
+                res.send({
+                    isOk: true,
+                    address: 'http://www.wmxz.wang/video.php?url='
+                });
             }else{
                 res.send({
                     isOk: false,
-                    msg: msg
+                    url: '/user/recharge?msg=' + encodeURIComponent('您的VIP电影会员已过期，请充值！')
                 });
             }
         });
 });
 
-/*
- * update header nav
- * */
-router.get('/update/header/nav', function (req, res) {
-    var updateNav = {
-        complaints: 0,
-        checks: 0
-    };
-
-    User.open().findById(req.session.passport.user)
-        .then(function (user) {
-            Task.open().find({
-                taskUserId: user._id,
-                taskStatus: '被投诉'
-            }).then(function (complaints) {
-                updateNav.complaints = complaints.length;
-                Task.open().find({
-                    userId: user._id,
-                    taskStatus: '待审核'
-                }).then(function (checks) {
-                    updateNav.checks = checks.length;
-                    res.send(updateNav);
-                });
-            });
-        });
-});
 
 router.get('/recharge', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
             res.render('recharge', {
                 title: '在线充值',
-                user: user
+                user: user,
+                msg: req.query.msg
             })
         });
 });

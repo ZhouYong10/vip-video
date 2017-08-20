@@ -9,7 +9,7 @@
     <link rel="import" href="../../components/head/head.html?__inline">
 </head>
 
-<body data-type="taskerHome" class="theme-black">
+<body data-type="userHome" class="theme-black">
 <div class="am-g tpl-g">
     <!-- 头部 -->
     <link rel="import" href="../../components/header/header.html?__inline">
@@ -27,7 +27,7 @@
                     <div class="widget" style="min-height: 96px;">
                         <div>
                             &nbsp;&nbsp;下级推广：<br/>
-                            &nbsp;&nbsp;通过此链接注册的用户即为我的下级用户。
+                            &nbsp;&nbsp;通过此链接注册的用户即为我的下级用户。下级充值返现20%！
                         </div>
                         <div class="am-u-sm-9 am-u-lg-6">
                             <input class="am-form-field am-input-sm am-radius" type="text"
@@ -37,43 +37,6 @@
                             <a class="clipboard am-btn am-btn-primary am-radius am-btn-sm"
                                title="通过此链接注册的用户即为我的下级用户。"
                                data-clipboard-text="<%= invitation %>">复制</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row  am-cf">
-                <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
-                    <div class="widget widget-primary am-cf">
-                        <div class="widget-statistic-header">
-                            可用余额
-                            <a href="/user/recharge" style="margin-left: 8%; background-color: #67c12f; border-color: #67c12f;"
-                               class="am-btn am-btn-warning am-radius am-btn-sm">在线充值</a>
-                        </div>
-                        <div class="widget-statistic-body">
-                            <div class="widget-statistic-value">
-                                ￥ <%= user.funds %>
-                            </div>
-                            <div class="widget-statistic-description">
-                                当前可用于消费的金额。
-                            </div>
-                            <span class="widget-statistic-icon am-icon-credit-card-alt"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
-                    <div class="widget widget-purple am-cf">
-                        <div class="widget-statistic-header">
-                            冻结余额
-                        </div>
-                        <div class="widget-statistic-body">
-                            <div class="widget-statistic-value">
-                                ￥<%= user.freezeFunds %>
-                            </div>
-                            <div class="widget-statistic-description">
-                                当前正在执行中的任务金额。
-                            </div>
-                            <span class="widget-statistic-icon am-icon-support"></span>
                         </div>
                     </div>
                 </div>
@@ -109,6 +72,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 

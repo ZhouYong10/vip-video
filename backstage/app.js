@@ -258,8 +258,6 @@ app.post('/sign/in', function (req, res, next) {
                 username: info.username.replace(/(^\s*)|(\s*$)/g, ""),
                 password: info.password,
                 qq: info.qq,
-                role: 'user',
-                roleName: '用户',
                 readme: info.readme
             };
 
@@ -296,9 +294,6 @@ app.post('/sign/in', function (req, res, next) {
                     });
                 }
             } else {
-                //User.createUser(userInfo, function () {
-                //    login(req, res, next);
-                //});
                 res.send({
                     isOK: false,
                     field: 'username',
@@ -309,22 +304,6 @@ app.post('/sign/in', function (req, res, next) {
 });
 
 //对外公共接口
-app.get('/new/placard', function (req, res) {
-    User.open().findById(req.session.passport.user)
-        .then(function (user) {
-            var query;
-            if(user.role == 'tasker'){
-                query = {type: {$ne: 'handerPlacard'}};
-            }else if(user.role == 'hander'){
-                query = {type: {$ne: 'taskerPlacard'}};
-            }
-            Placard.open().newPlacard(query)
-                .then(function (obj) {
-                    res.send(obj);
-                });
-        });
-});
-
 app.get('/auto/recharge/to/user', function (req, res) {
     var info = req.query;
     User.open().findById(info.userId).then(function (user) {
@@ -360,12 +339,11 @@ app.use(function(req, res, next) {
 app.get('/user/home', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            console.log(user, '====================');
             var invitation = 'http://' + req.headers.host + '/sign/in?invitation='
                 + Utils.cipher(user._id + '', Utils.invitationKey);
             Placard.open().findPages({type: {$ne: 'handerPlacard'}}, (req.query.page ? req.query.page : 1))
                 .then(function (obj) {
-                    res.render('taskerHome', {
+                    res.render('userHome', {
                         title: '系统公告',
                         invitation: invitation,
                         placards: obj.results,
@@ -379,14 +357,10 @@ app.get('/user/home', function (req, res) {
 });
 
 app.use('/user', require('./router/user.js'));
-app.use('/hander', require('./router/hander.js'));
-app.use('/tasker', require('./router/tasker.js'));
-app.use('/parse', require('./router/parse-address.js'));
 app.use('/admin', require('./router/admin.js'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log('======================================');
   var err = new Error('Not Found');
   err.status = 404;
   next(err);

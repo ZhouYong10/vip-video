@@ -8,9 +8,10 @@
     <title><%=title%></title>
 
     <link rel="import" href="../../components/head/head.html?__inline">
+    <link rel="stylesheet" href="recharge.scss?__inline">
 </head>
 
-<body data-type="taskerRecharge" class="theme-black">
+<body data-type="recharge" class="theme-black">
 <div class="am-g tpl-g">
     <!-- 头部 -->
     <link rel="import" href="../../components/header/header.html?__inline">
@@ -20,65 +21,70 @@
     <!-- 内容区域 -->
     <div class="tpl-content-wrapper">
 
-        <div class="container-fluid am-cf">
-            <div class="row">
-                <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                    <div class="page-header-heading">
-                        <span class="am-icon-warning page-header-heading-icon"></span>
-                        提示 <small>充值必看</small>
-                    </div>
-                    <p class="page-header-description">
-                        1、支付宝账号：vip990011@qq.com支付宝名称：李青青 <br/>
-                        2、通过支付宝进行转账，请核对收款名称与支付宝名称是否与上面一致。<br/>
-                        3、转账完成后，点击付款页面的“查看详情”，记录下 32 位的交易号。<br/>
-                        4、输入交易号，稍等 30 秒即可自动入账。<br/>
-                        5、如果付款后提示交易号无法充值，请提交问题反馈。<br/><br/>
-                        <span class="tips">注意： 交易号当天有效（晚上十二点之前），第二天提交会自动过期。</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
         <div class="row-content am-cf">
+            <div class="row am-cf">
+                <div class="am-u-sm-12 widget-margin-bottom-lg">
+                    <div class="widget am-cf widget-body-lg" style="padding: 10px 12px;">
 
-            <div class="row">
-
-                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                    <div class="widget am-cf">
-                        <div class="widget-head am-cf">
-                            <div class="widget-title am-fl"><%=title%></div>
+                        <% if(msg){ %>
+                        <div style="text-align: center;">
+                            <span class="tips"><%= msg %></span>
                         </div>
-                        <div id="recharge" class="widget-body am-fr">
+                        <% } %>
 
-                            <validator name="recharge">
-                                <form class="am-form tpl-form-border-form tpl-form-border-br">
-                                    <div class="am-form-group">
-                                        <label for="taskAddress" class="am-u-sm-4 am-u-lg-2 am-form-label">
-                                            <span class="tips" v-if="$recharge.num.required">* </span>
-                                            支付宝交易号
-                                        </label>
-                                        <div class="am-u-sm-8 am-u-lg-10">
-                                            <input id="taskAddress" class="am-radius am-input-sm" type="text" placeholder="输入 32 位的支付宝交易号"
-                                                   v-validate:num="{required: true, minlength: 32, maxlength: 32, isnum: true}" v-model="num">
-                                            <span class="tips" v-if="$recharge.num.required">支付宝交易号不能为空!</span>
-                                            <span class="tips" v-if="$recharge.num.minlength || $recharge.num.maxlength || $recharge.num.isnum">请输入合法的支付宝交易号!</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="am-form-group">
-                                        <div class="am-u-sm-8 am-u-sm-offset-4 am-u-lg-10 am-u-lg-offset-2">
-                                            <button class="am-btn am-btn-primary am-radius" v-if="$recharge.valid" @click.stop.prevent="commit">立即充值</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </validator>                     
-
+                        <div class="row am-cf">
+                            <div class="am-u-sm-12">
+                                <div class="widget" style="min-height: 96px;padding: 10px 12px;">
+                                    3元一天（24小时），18元一周（7天），56元一个月（30天），126元3个月（90天），368元一年（365天）。<br/>
+                                    注意：  充值不足一年，按季度算；不足一个季度，按月算；不足一个月，按周算；
+                                    不足一周，按天算；不足一天，则充值无效，且不退款。
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="am-g am-g-collapse">
+                            <div class="am-u-lg-6">
+                                方式一【扫码充值】：<br/>
+                                1、通过扫码充值，付款金额为您需要充值的金额。<br/>
+                                2、付款说明（转账付款时请填写备注）填写您在本系统的账号为： <span class="tips"><%= user.username %></span><br/>
+                                3、如付款备注账号错误或未备注充值账号，会导致扫码自动充值失败，此情况请使用方式二充值。<br/><br/>
+
+                                方式二【交易号充值】：<br/>
+                                1、请优先使用方式一充值，如方式一充值失败，可提交交易号充值。 <br/>
+                                2、转账完成后，点击付款页面的“查看详情”，记录下 32 位的交易号。<br/>
+                                3、输入交易号，稍等 30 秒即可自动入账。<br/>
+                                4、如果提示交易号仍无法充值，请提交问题反馈。<br/><br/>
+                                注意： 此方式交易号当天有效（晚上十二点之前），第二天提交会自动过期。
+                            </div>
+                            <div class="am-u-lg-6">
+                                <img class="am-radius" src="./recharge.png" alt="扫码充值" height="270" />
+                            </div>
+                        </div>
+
+                        <form class="am-form am-form-horizontal tpl-form-border-form tpl-form-border-br am-g-collapse">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-1">
+                                    交易号
+                                </label>
+                                <div class="am-u-sm-9 am-u-lg-11">
+                                    <input id="rechargeNum" class="am-radius am-input-sm input" type="text"
+                                           placeholder="输入 32 位的支付宝交易号">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-9 am-u-sm-offset-3 am-u-lg-11 am-u-lg-offset-1">
+                                    <button id="commit" class="am-btn am-btn-primary am-radius">立即充值</button>
+                                </div>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <link rel="import" href="../../components/foot/foot.html?__inline">

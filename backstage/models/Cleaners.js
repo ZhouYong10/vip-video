@@ -3,8 +3,6 @@
  */
 var Schedule = require('node-schedule');
 var Feedback = require('./Feedback');
-var Order = require('./Order');
-var Task = require('./Task');
 var Profit = require('./Profit');
 var Withdraw = require('./Withdraw');
 var Consume = require('./Consume');

@@ -55,20 +55,11 @@
                                 </div>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
-                                        账户余额
+                                        账户金额
                                     </label>
                                     <div class="am-u-sm-8">
                                         <input class="am-radius am-input-sm" type="text" id="funds"
                                                name="funds" value="<%= user.funds %>">
-                                    </div>
-                                </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-4 am-form-label">
-                                        冻结金额
-                                    </label>
-                                    <div class="am-u-sm-8">
-                                        <input class="am-radius am-input-sm" type="text" id="freezeFunds"
-                                               name="freezeFunds" value="<%= user.freezeFunds %>">
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -82,7 +73,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="am-form-group" style="display: none">
+                                <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
                                         VIP电影
                                     </label>
@@ -95,22 +86,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="am-form-group" style="display: none">
+                                <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
                                         VIP日期
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <input id="viptime" type="text" class="am-input-sm am-radius"
-                                               name="viptime" value="<%= user.viptime %>" placeholder="选择VIP日期"
+                                        <input id="vipTime" type="text" class="am-input-sm am-radius"
+                                               name="vipTime" value="<%= user.vipTime %>" placeholder="选择VIP日期"
                                                onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                                    </div>
-                                </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-4 am-form-label">
-                                        等级
-                                    </label>
-                                    <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.roleName %></p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">

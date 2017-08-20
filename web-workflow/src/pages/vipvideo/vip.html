@@ -2,87 +2,122 @@
 <html lang="zh">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>VIP电影 - 免费看爱奇艺,优酷,腾讯,乐视,芒果等各大视频网站的VIP视频。</title>
 	<meta name="keywords" content="爱奇艺VIP账号共享,爱奇艺电影,爱奇艺VIP电影,优酷VIP,账号共享,VIP电影,免费电影,在线电影">
 	<meta name="description" content="VIP电影 -   一键解析爱奇艺,优酷,腾讯,乐视,芒果等各大视频网站的VIP视频">
+	<title>VIP电影 - 免费看爱奇艺,优酷,腾讯,乐视,芒果等各大视频网站的VIP视频。</title>
 
-
-	<link rel="stylesheet" type="text/css" media="screen and (min-width:320px) and (max-device-width:980px)"
-		  href="/static/plugins/vip_files/m-styles.css">
-	<link rel="stylesheet" type="text/css" media="screen and (min-width:980px)"
-		  href="/static/plugins/vip_files/styles.css">
-	<link type="image/x-icon" href="/static/images/favicon.ico" rel="icon">
+	<link rel="import" href="../../components/head/head.html?__inline">
 </head>
 
-<body>
-<div class="ico">
-	<a href="http://www.youku.com/" target="_blank">
-		<img src="/static/plugins/vip_files/youku.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://www.iqiyi.com/" target="_blank">
-		<img src="/static/plugins/vip_files/iqiyi.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://v.qq.com/" target="_blank">
-		<img src="/static/plugins/vip_files/qq.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://www.le.com/" target="_blank">
-		<img src="/static/plugins/vip_files/le.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://tv.sohu.com/" target="_blank">
-		<img src="/static/plugins/vip_files/sohu.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://www.mgtv.com/" target="_blank">
-		<img src="/static/plugins/vip_files/mgtv.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://www.tudou.com/" target="_blank">
-		<img src="/static/plugins/vip_files/tudou.png" data-bd-imgshare-binded="1">
-	</a>
-	<a href="http://www.m1905.com/" target="_blank">
-		<img src="/static/plugins/vip_files/1905.png" data-bd-imgshare-binded="1">
-	</a>
-</div>
+<body data-type="vipVideo" class="theme-black">
 
-<div class="login">
-	<div align="center">
-		<a href="#" title="VIP电影" target="_blank">
-			<img src="/static/plugins/vip_files/logo.png" alt="VIP电影免费看" data-bd-imgshare-binded="1">
-		</a>
-	</div>
+<div class="am-g tpl-g">
+	<!-- 头部 -->
+	<link rel="import" href="../../components/header/header.html?__inline">
+	<!-- 侧边导航栏 -->
+	<link rel="import" href="../../components/menu/menu.html?__inline">
 
-	<div class="login_title"></div>
+	<!-- 内容区域 -->
+	<div class="tpl-content-wrapper">
 
-	<div class="login_fields">
-		<div class="login_fields__user">
-			<input placeholder="VIP视频地址......" id="valueurl" name="valueurl" value="">
-			<div class="validation"></div>
+		<div class="row-content am-cf">
+			<div class="row am-cf">
+				<div class="am-u-sm-12 widget-margin-bottom-lg">
+					<div class="widget am-cf widget-body-lg" style="padding: 10px 12px;">
+
+						<div class="am-g">
+							<div class="am-u-lg-6 am-u-sm-12 am-u-sm-centered am-g-collapse">
+								<ul class="am-avg-lg-8 am-avg-sm-4 am-thumbnails">
+									<li>
+										<a href="http://www.youku.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/youku.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://www.iqiyi.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/iqiyi.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://v.qq.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/qq.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://www.le.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/le.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://tv.sohu.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/sohu.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://www.mgtv.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/mgtv.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://www.tudou.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/tudou.png">
+										</a>
+									</li>
+									<li>
+										<a href="http://www.m1905.com/" target="_blank">
+											<img class="am-img-responsive" src="/static/plugins/vip_files/1905.png">
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<ul class="am-g">
+							<li id="videoAddress" class="am-u-sm-12">
+								<div class="am-g">
+									<div class="am-u-lg-7 am-u-sm-12 am-u-sm-centered">
+										<div align="center">
+											<a href="/user/vip/video" title="VIP电影">
+												<img src="/static/plugins/vip_files/logo.png" alt="VIP电影免费看" data-bd-imgshare-binded="1">
+											</a>
+											<div>
+												<div style="padding-bottom: 12px;">
+													<input type="text" class="am-form-field am-radius am-input-sm"
+														   id="valueurl" name="valueurl" placeholder="VIP视频地址......" />
+												</div>
+
+												<div style="padding-bottom: 12px;">
+													<input class="am-btn  am-btn-secondary am-radius am-btn-sm"
+														   type="button" name="submitbf" value="播放">
+												</div>
+											</div>
+
+											<div class="disclaimer">
+												<center><a href="/user/vip/video/teach" target="_blank"><font color="red">点击查看教程</font></a></center>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li id="videoObj" class="am-u-sm-12">
+								<div class="success" style="width:100%; height:auto;">
+									<iframe style="width:100%; height:475px;" name="iframe0" id="vipurl" frameborder="0" data-id="" seamless=""></iframe>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</div>
 		</div>
-
-		<div class="login_fields__submit">
-			<input type="button" name="submitbf" value="播放">
-		</div>
-	</div>
-
-	<div class="disclaimer">
-		<p><br></p>
-		<p></p>
-		<center><a href="/user/vip/video/teach" target="_blank"><font color="red">点击查看教程</font></a></center>
 	</div>
 </div>
-
-<div class="success">
-	<iframe style="width: 100%; height: 475px;" name="iframe0" id="vipurl" frameborder="0" data-id="" seamless=""></iframe>
-</div>
-
-<div class="disclaimer"></div>
 
 <script src="/static/plugins/vip_files/stopExecutionOnTimeout.js"></script>
 <script src="/static/plugins/vip_files/jquery-2.1.1.min.js"></script>
 <script src="/static/plugins/vip_files/jquery-ui.min.js"></script>
-<script>
-	alert('温馨提示：\n 已经更新了各大视频网站的VIP算法，现在解析正常。各大VIP视频都能正常播放。如有不能播放的请多刷新几次,有可能是服务器缓存没有刷过来！');
-</script>
+<script src="/static/js/app.js"></script>
 
 </body>
+
 </html>

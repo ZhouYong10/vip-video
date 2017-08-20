@@ -4,14 +4,8 @@
 var User = require('../models/User');
 var Placard = require('../models/Placard');
 var Recharge = require('../models/Recharge');
-var Error = require('../models/Error');
 var Feedback = require('../models/Feedback');
 var Withdraw = require('../models/Withdraw');
-
-var Product = require('../models/Product');
-var Order = require('../models/Order');
-var Task = require('../models/Task');
-var Address = require('../models/Address');
 
 var moment = require('moment');
 var Formidable = require('formidable');
@@ -80,28 +74,20 @@ router.get('/get/system/funds', function(req, res) {
 * */
 router.get('/update/header/nav', function (req, res) {
     var updateNav = {
-        checkOrder: 0,
-        complaintTask: 0,
         feedback: 0,
         recharge: 0,
         withdraw: 0
     };
 
-    Order.open().find({status: '审核中'}).then(function (orders) {
-        updateNav.checkOrder = orders.length;
-        Task.open().find({taskStatus: '被投诉'}).then(function (tasks) {
-            updateNav.complaintTask = tasks.length;
-            Feedback.open().find({status: '未处理'}).then(function (feedbacks) {
-                updateNav.feedback = feedbacks.length;
-                getRechargeNum().then(function (num) {
-                    updateNav.recharge = num;
-                    Withdraw.open().find({status: '未处理'}).then(function (withdraws) {
-                        updateNav.withdraw = withdraws.length;
-                        res.send(updateNav);
-                    });
-                })
+    Feedback.open().find({status: '未处理'}).then(function (feedbacks) {
+        updateNav.feedback = feedbacks.length;
+        getRechargeNum().then(function (num) {
+            updateNav.recharge = num;
+            Withdraw.open().find({status: '未处理'}).then(function (withdraws) {
+                updateNav.withdraw = withdraws.length;
+                res.send(updateNav);
             });
-        });
+        })
     });
 
     function getRechargeNum() {
@@ -401,47 +387,6 @@ router.get('/lowerUsers/of/user', function (req, res) {
         });
 });
 
-
-
-/*
- * manage price
- * */
-router.get('/price/manage', function (req, res) {
-    Product.open().find()
-        .then(function (obj) {
-            res.render('adminPriceManage', {
-                title: '价格管理',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                products: obj
-            });
-        });
-});
-
-router.post('/price/manage', function (req, res) {
-    Product.open().insert(req.body)
-        .then(function (result) {
-            res.send(result[0]);
-        });
-});
-
-router.post('/price/manage/update', function (req, res) {
-    var id = req.body.id;
-    delete req.body.id;
-    Product.open().updateById(id, {$set: req.body})
-        .then(function (result) {
-            res.end();
-        });
-});
-
-router.post('/price/manage/delete', function (req, res) {
-    Product.open().removeById(req.body.id)
-        .then(function () {
-            res.end();
-        });
-});
-
-
 /*
  * manage placard
  * */
@@ -498,321 +443,6 @@ router.get('/placard/add', function (req, res) {
     })
 });
 
-/*
-* manage order handle
-* */
-global.orderCheckIsOpen = 'no';
-router.get('/check/wait', function (req, res) {
-    Order.open().findPages({
-            status: '审核中'
-        }, (req.query.page ? req.query.page : 1))
-        .then(function(obj) {
-            res.render('adminCheckWait', {
-                title: '待发布任务',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages,
-                orderCheckIsOpen: global.orderCheckIsOpen,
-                path: '/admin/check/wait'
-            });
-        })
-});
-
-router.get('/orderCheckOpen', function (req, res) {
-    global.orderCheckIsOpen = 'yes';
-    res.end(global.orderCheckIsOpen);
-});
-
-router.get('/orderCheckClose', function (req, res) {
-    global.orderCheckIsOpen = 'no';
-    res.end(global.orderCheckIsOpen);
-});
-
-router.get('/check/release', function (req, res) {
-    var orderId = req.query.id;
-    var url = req.query.url;
-    Order.open().updateById(orderId, {
-        $set: {
-            status: '已发布'
-        }
-    }).then(function () {
-        res.redirect(url);
-    });
-});
-
-router.get('/check/refuse/refund', function (req, res) {
-    var msg = req.query;
-    Order.open().findById(msg.id)
-        .then(function(order) {
-            if(order.status != '已退款'){
-                var orderIns = Order.wrapToInstance(order);
-                orderIns.refund(msg.info, function() {
-                    res.redirect(msg.url);
-                });
-            }else {
-                res.redirect(msg.url);
-            }
-        })
-});
-
-router.get('/check/already', function (req, res) {
-    Order.open().findPages({
-            status: '已发布'
-        }, (req.query.page ? req.query.page : 1))
-        .then(function (obj) {
-            res.render('adminCheckAlre', {
-                title: '执行中任务',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages
-            });
-        });
-});
-
-router.get('/order/refund', function (req, res) {
-    Task.open().find({
-        orderId: req.query.id,
-        taskStatus: {$in: ['待审核', '被投诉']}
-    }).then(function (tasks) {
-        if(tasks.length > 0) {
-            res.redirect('/admin/order/details?orderId=' + req.query.id + '&refund=true');
-        }else {
-            Order.open().findById(req.query.id).then(function(order) {
-                Order.open().updateById(order._id, {$set: {
-                    status: '已退款',
-                    surplus: 0,
-                    refundInfo: req.query.info
-                }}).then(function() {
-                    User.open().findById(order.userId).then(function(user) {
-                        if(user) {
-                            User.open().updateById(user._id, {$set: {
-                                funds: (parseFloat(user.funds) + parseFloat(order.surplus)).toFixed(4),
-                                freezeFunds: (parseFloat(user.freezeFunds) - parseFloat(order.surplus)).toFixed(4)
-                            }}).then(function() {
-                                res.redirect('/admin/check/already');
-                            })
-                        }else{
-                            User.open().findOne({username: 'admin'})
-                                .then(function (admin) {
-                                    User.open().updateById(admin._id, {
-                                        $set: {
-                                            funds: (parseFloat(admin.funds) + parseFloat(order.surplus)).toFixed(4),
-                                            freezeFunds: (parseFloat(admin.freezeFunds) - parseFloat(order.surplus)).toFixed(4)
-                                        }
-                                    }).then(function () {
-                                        res.redirect('/admin/check/already');
-                                    });
-                                });
-                        }
-                    })
-                })
-            })
-        }
-    });
-});
-
-router.get('/check/refund', function (req, res) {
-    Order.open().findPages({
-            status: '已退款'
-        }, (req.query.page ? req.query.page : 1))
-        .then(function(obj) {
-            res.render('adminCheckRefund', {
-                title: '已退款任务',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages,
-                path: '/admin/check/refund'
-            });
-        })
-});
-
-router.get('/order/complete', function (req, res) {
-    Order.open().findPages({
-            status: '已完成'
-        }, (req.query.page ? req.query.page : 1))
-        .then(function(obj) {
-            res.render('adminOrderComplete', {
-                title: '已完结任务',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages
-            });
-        })
-});
-
-router.get('/order/details', function (req, res) {
-    var query = {
-        orderId: req.query.orderId
-    };
-    if(req.query.refund) {
-        query = {
-            orderId: req.query.orderId,
-            taskStatus: {$in: ['待审核', '被投诉']}
-        }
-    }
-    Task.open().findPages(query, (req.query.page ? req.query.page : 1))
-        .then(function (obj) {
-            var renderInfo = {
-                title: '人工任务管理 / 任务进度详情',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages,
-                msg: undefined
-            };
-            if(req.query.refund) {
-                renderInfo.msg = '该订单存在待审核或被投诉任务，清楚理后再取消！';
-            }
-            res.render('adminOrderDetails', renderInfo);
-        });
-});
-
-router.get('/task/complete', function (req, res) {
-    Task.open().findById(req.query.id).then(function(task) {
-        var taskIns = Task.wrapToInstance(task);
-        taskIns.success().then(function() {
-            res.redirect('/admin/order/details?orderId=' + taskIns.orderId + '&refund=true');
-        })
-    })
-});
-
-router.get('/task/refund', function (req, res) {
-    Task.open().findById(req.query.id).then(function(task) {
-        var taskIns = Task.wrapToInstance(task);
-        taskIns.refuse().then(function () {
-            res.redirect('/admin/order/details?orderId=' + taskIns.orderId + '&refund=true');
-        });
-    })
-});
-
-router.get('/complaint/wait', function (req, res) {
-    Task.open().findPages({
-            taskStatus: '被投诉'
-        }, (req.query.page ? req.query.page : 1))
-        .then(function (obj) {
-            res.render('adminComplaintWait', {
-                title: '被投诉任务',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages
-            });
-        });
-});
-
-router.get('/complaint/success', function (req, res) {
-    Task.open().findById(req.query.taskId).then(function(task) {
-        var taskIns = Task.wrapToInstance(task);
-        taskIns.refuse().then(function () {
-            res.redirect('/admin/complaint/wait');
-        });
-    })
-});
-
-router.get('/complaint/refuse', function (req, res) {
-    Task.open().findById(req.query.taskId).then(function(task) {
-        var taskIns = Task.wrapToInstance(task);
-        taskIns.success().then(function() {
-            Task.open().updateById(req.query.taskId, {$set: {
-                taskStatus: '投诉不成立',
-                complaintRefuse: req.query.info
-            }}).then(function () {
-                res.redirect('/admin/complaint/wait');
-            });
-        })
-    })
-});
-
-router.get('/complaint/alre', function (req, res) {
-    Task.open().findPages({
-            taskStatus: {$in: ['投诉成立', '投诉不成立']}
-        }, (req.query.page ? req.query.page : 1))
-        .then(function (obj) {
-            res.render('adminComplaintAlre', {
-                title: '被投诉已处理',
-                money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
-                orders: obj.results,
-                pages: obj.pages
-            });
-        });
-});
-
-
-
-/*
- * manage order form
- * */
-
-router.get('/redirect/aim/order', function (req, res) {
-    var orderId = req.query.id, type = req.query.type, smallType = req.query.smallType,
-        render = '', title = '', money = req.session.systemFunds, freezeFunds = req.session.freezeFunds,
-        pages = 1, path = '/admin/error/wait';
-    Order.open().findById(orderId).then(function(result) {
-        var arr = [];
-        arr.push(result);
-        switch (type) {
-            case 'forum':
-                render = 'adminReplyAlre';
-                title = '回复任务管理 / 已处理订单';
-                break;
-            case 'flow':
-                render = 'adminFlowAlre';
-                title = '流量任务管理 / 已处理订单';
-                break;
-            case 'wx':
-                switch (smallType) {
-                    case 'article': case 'share': case 'collect':
-                    render = 'adminWXarticleAlre';
-                    title = '微信任务管理 / 已处理微信原文任务';
-                    break;
-                    case 'read': case 'like':
-                    render = 'adminWXlikeAlre';
-                    title = '微信任务管理 / 已处理微信阅读点赞任务';
-                        break;
-                    case 'readQuick': case 'likeQuick':
-                    render = 'adminWXlikeQuickAlre';
-                    title = '微信任务管理 / 已处理微信阅读点赞快速任务';
-                    break;
-                    case 'fans':
-                        render = 'adminWXreplyAlre';
-                        title = '微信任务管理 / 已处理公众粉丝回复任务';
-                        break;
-                    case 'friend':
-                        render = 'adminWXfriendAlre';
-                        title = '微信任务管理 / 已处理微信个人好友任务';
-                        break;
-                    case 'code':
-                        render = 'adminWXcodeAlre';
-                        title = '微信任务管理 / 已处理微信好友地区扫码';
-                        break;
-                }
-                break;
-            case 'mp':
-                render = 'adminMPAlre';
-                title = '美拍任务管理 / 已处理订单';
-                break;
-            case 'wb':
-                render = 'adminWBAlre';
-                title = '微博任务管理 / 已处理订单';
-                break;
-        }
-        res.render(render, {
-            title: title,
-            money: money,
-            freezeFunds: freezeFunds,
-            orders: arr,
-            pages: pages,
-            path: path,
-            readTotal: result.num
-        });
-    })
-
-});
 
 router.get('/feedback/wait', function (req, res) {
     Feedback.open().findPages({

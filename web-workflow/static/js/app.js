@@ -3,10 +3,11 @@ $(function () {
     var dataType = $('body').attr('data-type');
     switch (dataType) {
         case 'feedback':
-        case 'taskerHome':
-        case 'handerHome':
+        case 'vipVideo':
+        case 'userHome':
+        case 'recharge':
+        case 'withdraw':
         case 'adminHome':
-        case 'adminPriceManage':
             $('#' + dataType).addClass('active');
             break;
         default:

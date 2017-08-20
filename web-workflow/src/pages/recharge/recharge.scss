@@ -1,0 +1,33 @@
+.tips{
+  color: red;
+  font-size: large;
+}
+
+.prompt-title{
+  text-align: center;
+  font-size: large;
+  font-weight:bold;
+}
+
+label{
+  border: 1px solid #6f7579;
+  line-height: 30px;
+  text-align: center;
+  font-weight: normal;
+}
+
+.am-form-group .input{
+  height: 32px;
+}
+
+@media (min-width: 600px) {
+  form{
+    padding-right: 88px;
+  }
+}
+
+@media (min-width: 1000px) {
+  form{
+    padding: 0;
+  }
+}
