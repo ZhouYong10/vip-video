@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                 </validator>
-                                <div class="totalProfit" style="float: right;">总计： ￥<%= totalProfit %></div>
+                                <div class="totalProfit" style="float: right; padding-right: 12px;">总计： ￥<%= totalProfit %></div>
                             </div>
 
                             <div class="am-u-sm-12 am-scrollable-horizontal">
@@ -54,11 +54,9 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>时间</th>
                                         <th>用户</th>
-                                        <th>类型</th>
-                                        <th>标题</th>
-                                        <th>返利金额</th>
+                                        <th>充值时间</th>
+                                        <th>返现金额</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -66,14 +64,8 @@
                                     <% for(var i = 0; i < profits.length; i ++ ){ %>
                                     <tr class="<% if(profits[i].status == 'refund'){ %> am-danger <% } %>">
                                         <td><%= i + 1 %></td>
-                                        <td><%= profits[i].createTime %></td>
                                         <td><%= profits[i].childName %></td>
-                                        <td><%= profits[i].typeName %></td>
-                                        <td>
-                                            <a class="am-text-truncate text-break" title="<%= profits[i].title %>">
-                                                <%= profits[i].title %>
-                                            </a>
-                                        </td>
+                                        <td><%= profits[i].createTime %></td>
                                         <td>￥ <%= profits[i].price %></td>
                                     </tr>
                                     <% } %>

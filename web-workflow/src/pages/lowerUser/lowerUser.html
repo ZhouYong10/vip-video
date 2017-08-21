@@ -32,9 +32,9 @@
                                 <validator name="search">
                                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
                                         <div class="am-input-group am-input-group-sm cl-p">
-                                            <form id="search" method="get" action="/user/search/lowerUser"">
+                                            <form id="search" method="get" action="/user/search/lowerUser">
                                                 <input id="taskName" type="text" class="am-form-field am-input-sm am-radius"
-                                                       name="account" placeholder="用户名(支持模糊查询)" style="height:33px;"
+                                                       name="username" placeholder="用户名(支持模糊查询)" style="height:33px;"
                                                        v-validate:account="{required: true}">
                                             </form>
                                         <span class="am-input-group-btn">
@@ -65,11 +65,10 @@
                                 <table width="100%" class="am-table am-text-nowrap am-table-striped tpl-table-black">
                                     <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>账号</th>
                                         <th>创建时间</th>
-                                        <th>角色</th>
-                                        <th>余额</th>
-                                        <th>下线/人</th>
+                                        <th>下级/人</th>
                                         <th>最后登陆时间</th>
                                     </tr>
                                     </thead>
@@ -77,10 +76,9 @@
 
                                     <% for(var i = 0; i < users.length; i++){ %>
                                     <tr>
+                                        <td><%= i %></td>
                                         <td><%= users[i].username %></td>
                                         <td><%= users[i].createTime %></td>
-                                        <td><%= users[i].roleName %></td>
-                                        <td>￥ <%= users[i].funds %></td>
                                         <td><%= users[i].childNum %></td>
                                         <td><%= users[i].lastLoginTime %></td>
                                     </tr>

@@ -25,10 +25,10 @@
                 <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                     <div class="widget am-cf">
                         <div class="widget-head am-cf">
-                            <div class="widget-title  am-cf">文章列表</div>
+                            <div class="widget-title am-cf">文章列表</div>
                         </div>
-                        <div class="widget-body am-fr tpl-form-border-form tpl-form-border-br">
-                            <div id="searchForm" class="am-form am-form-inline">
+                        <div class="widget-body am-fr tpl-form-border-br">
+                            <div id="searchForm" class="am-form am-form-inline tpl-form-border-form">
                                 <validator name="search">
                                     <form method="get" action="/user/search/recharge">
                                         <div class="am-form-group am-form-group-sm search-title">
@@ -59,7 +59,7 @@
                                 </validator>
                             </div>
 
-                            <div class="am-u-sm-12 am-scrollable-horizontal forum-context">
+                            <div class="am-u-sm-12 am-scrollable-horizontal">
                                 <table width="100%" class="am-table am-text-nowrap am-table-striped tpl-table-black">
                                     <thead>
                                     <tr>
@@ -92,7 +92,6 @@
                                 <input type="hidden" value="<%= pages %>" id="pages">
                                 <div id="laypage"></div>
                             </div>
-
                         </div>
                     </div>
                 </div>

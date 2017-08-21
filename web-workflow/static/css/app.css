@@ -596,12 +596,6 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
 .tpl-login {
   width: 100%;
 }
-.tpl-login-logo {
-  max-width: 159px;
-  height: 205px;
-  margin: 0 auto;
-  margin-bottom: 20px;
-}
 .tpl-login-title {
   width: 100%;
   font-size: 24px;
@@ -728,9 +722,6 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
   font-weight: normal;
   font-size: 14px;
   padding: 6px 0;
-}
-.theme-black .tpl-login-logo {
-  background: url(/static/images/logob.png) center no-repeat;
 }
 .theme-black .tpl-table-line-img {
   max-width: 100px;

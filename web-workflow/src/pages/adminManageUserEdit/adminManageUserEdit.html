@@ -75,19 +75,6 @@
                                 </div>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
-                                        VIP电影
-                                    </label>
-                                    <div class="am-u-sm-8">
-                                        <select id="vipshow" class="am-radius am-input-sm" name="vipshow" style="color: #999;">
-                                            <option value="true"
-                                            <% if(user.vipshow && user.vipshow == 'true'){ %> selected <% } %>>显示</option>
-                                            <option value="false"
-                                            <% if(!user.vipshow || user.vipshow == 'false'){ %> selected <% } %>>隐藏</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-4 am-form-label">
                                         VIP日期
                                     </label>
                                     <div class="am-u-sm-8">
@@ -107,6 +94,14 @@
                                 <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
                                         下级/人
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.childNum %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        下级返现
                                     </label>
                                     <div class="am-u-sm-8">
                                         <p class="user-info"><%= user.childNum %></p>
