@@ -77,12 +77,11 @@ router.post('/recharge', function (req, res) {
             alipayInfo.userOldFunds = user.funds;
             alipayInfo.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
             Recharge.record(alipayInfo)
-                .then(function (alipayFunds, vipDays) {
+                .then(function (alipay) {
                     User.open().updateById(user._id, {$set: {
-                        funds: (parseFloat(user.funds) + parseFloat(alipayFunds)).toFixed(4),
-                        vipTime: moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
+                        funds: (parseFloat(user.funds) + parseFloat(alipay.funds)).toFixed(4),
+                        vipTime: moment(user.vipTime).add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss')
                     }}).then(function() {
-                        socketIO.emit('updateNav', {'recharge': 1});
                         res.send({
                             isOK: true,
                             path: '/user/recharge/history'

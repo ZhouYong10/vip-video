@@ -8,7 +8,6 @@ $(function () {
 
     var socket = io();
     socket.on('updateNav', function (obj) {
-        console.log(obj, '======================');
         updateNav(obj, true);
     });
 });
