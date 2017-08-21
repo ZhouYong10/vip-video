@@ -30,17 +30,6 @@ User.extend({
             })
         })
     },
-    getSystemFreezeFunds: function() {
-        return new Promise(function(resolve, reject) {
-            User.open().find().then(function(results) {
-                var count = 0;
-                results.forEach(function (result) {
-                    count += parseFloat(result.freezeFunds);
-                });
-                resolve(count.toFixed(4));
-            })
-        })
-    },
     createUser: function(user, resolve, reject) {
         user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
         user.funds = 0;

@@ -53,11 +53,11 @@
                                     <tr>
                                         <th>#</th>
                                         <th>创建时间</th>
-                                        <th>等级</th>
+                                        <th>角色</th>
                                         <th>用户名</th>
                                         <th>状态</th>
-                                        <th>账户余额</th>
-                                        <th>冻结金额</th>
+                                        <th>账户金额</th>
+                                        <th>VIP日期</th>
                                         <th>上级</th>
                                         <th>下级/人</th>
                                         <th>最后登陆时间</th>
@@ -79,9 +79,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="/admin/search/user/profit?userId=<%= users[i]._id %>">
-                                                ￥ <%= users[i].freezeFunds %>
-                                            </a>
+                                            <%= users[i].vipTime %>
                                         </td>
                                         <td><%= users[i].parent %></td>
                                         <td>

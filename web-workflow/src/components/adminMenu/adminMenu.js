@@ -8,6 +8,7 @@ $(function () {
 
     var socket = io();
     socket.on('updateNav', function (obj) {
+        console.log(obj, '======================');
         updateNav(obj, true);
     });
 });
@@ -22,15 +23,6 @@ function updateNav(obj, isAdd) {
         }else {
             $('.updateNum.' + key).css('display', 'none');
         }
-    }
-
-    var checkOrder = parseInt($('.updateNum.checkOrder').text());
-    var complaintTask = parseInt($('.updateNum.complaintTask').text());
-    var omNum = checkOrder + complaintTask;
-    if(omNum > 0) {
-        $('.tips.checkOrder.complaintTask').css('display', 'inline');
-    }else{
-        $('.tips.checkOrder.complaintTask').css('display', 'none');
     }
 
     var feedback = parseInt($('.updateNum.feedback').text());

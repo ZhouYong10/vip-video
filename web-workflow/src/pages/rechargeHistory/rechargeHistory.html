@@ -9,7 +9,7 @@
     <link rel="import" href="../../components/head/head.html?__inline">
 </head>
 
-<body data-type="taskerRechargeHis" class="theme-black">
+<body data-type="rechargeHistory" class="theme-black">
 
 <div class="am-g tpl-g">
     <!-- 头部 -->
@@ -67,6 +67,7 @@
                                         <th>订单号</th>
                                         <th>充值时间</th>
                                         <th>充值金额</th>
+                                        <th>购买天数</th>
                                         <th>状态</th>
                                         <th>描述</th>
                                     </tr>
@@ -79,6 +80,7 @@
                                         <td class="am-text-middle"><%= recharges[i].alipayId %></td>
                                         <td class="am-text-middle"><%= recharges[i].createTime %></td>
                                         <td class="am-text-middle"><%= recharges[i].funds %></td>
+                                        <td class="am-text-middle"><%= recharges[i].vipDays %></td>
                                         <td class="am-text-middle"><%= recharges[i].status %></td>
                                         <td class="am-text-middle"><%= recharges[i].dec %></td>
                                     </tr>

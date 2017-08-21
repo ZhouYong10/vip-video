@@ -6,6 +6,7 @@ $(function () {
         case 'vipVideo':
         case 'userHome':
         case 'recharge':
+        case 'rechargeHistory':
         case 'withdraw':
         case 'adminHome':
             $('#' + dataType).addClass('active');

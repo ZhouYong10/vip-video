@@ -69,55 +69,50 @@ router.get('/recharge', function (req, res) {
 });
 
 router.post('/recharge', function (req, res) {
+    var alipayInfo = req.body;
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            var url = 'http://www.hongtupingtai.com/handle/recharge?type=handle' +
-                '&alipayId=' + req.body.alipayId +
-                '&userId=' + user._id +
-                '&username=' + encodeURIComponent(user.username) +
-                '&createTime=' + moment().format('YYYY-MM-DD HH:mm:ss') +
-                '&userOldFunds=' + user.funds;
-            request(url, function (err, resp, body) {
-                var info = JSON.parse(body);
-                if(info.isOK) {
-                    if(info.alipayFunds) {
-                        User.open().updateById(user._id, {$set: {
-                            funds: (parseFloat(user.funds) + parseFloat(info.alipayFunds)).toFixed(4)
-                        }}).then(function() {
-                            res.send({
-                                isOK: true,
-                                path: '/user/recharge/history'
-                            });
-                        })
-                    }else{
-                        socketIO.emit('updateNav', {recharge: 1});
-                        res.send(info);
-                    }
-                }else{
-                    res.send(info);
-                }
-            });
+            alipayInfo.username = user.username;
+            alipayInfo.userId = user._id;
+            alipayInfo.userOldFunds = user.funds;
+            alipayInfo.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            Recharge.record(alipayInfo)
+                .then(function (alipayFunds, vipDays) {
+                    User.open().updateById(user._id, {$set: {
+                        funds: (parseFloat(user.funds) + parseFloat(alipayFunds)).toFixed(4),
+                        vipTime: moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
+                    }}).then(function() {
+                        socketIO.emit('updateNav', {'recharge': 1});
+                        res.send({
+                            isOK: true,
+                            path: '/user/recharge/history'
+                        });
+                    })
+                }, function(errInfo) {
+                    res.send(errInfo);
+                })
         });
 });
+
 
 router.get('/recharge/history', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            var url = 'http://www.hongtupingtai.com/handle/recharge/history?type=handle' +
-                '&userId=' + user._id +
-                '&page=' + (req.query.page ? req.query.page : 1);
-            request(url, function (err, resp, body) {
-                var obj = JSON.parse(body);
-                if(obj.results){
-                    res.render('rechargeHistory', {
-                        title: '充值记录',
-                        user: user,
-                        recharges: obj.results,
-                        pages: obj.pages
-                    });
-                }else{
-                    res.send(obj);
-                }
+            var info = {
+                query: {
+                    userId: user._id
+                },
+                page: req.query.page ? req.query.page : 1
+            };
+            Recharge.history(info).then(function (obj) {
+                res.render('rechargeHistory', {
+                    title: '充值记录',
+                    user: user,
+                    recharges: obj.results,
+                    pages: obj.pages
+                });
+            }, function(errMsg) {
+                res.send(errMsg);
             });
         });
 });
@@ -125,22 +120,28 @@ router.get('/recharge/history', function (req, res) {
 router.get('/search/recharge', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            var url = 'http://www.hongtupingtai.com/handle/search/recharge?type=handle&userId=' + user._id +
-                '&page=' + (req.query.page ? req.query.page : 1);
+            var query = {
+                userId: user._id
+            };
             if(req.query.funds) {
-                url += '&funds=' + req.query.funds;
+                query.funds = parseFloat(req.query.funds);
             }
             if(req.query.createTime) {
-                url += '&createTime=' + req.query.createTime;
+                query.createTime = new RegExp(req.query.createTime);
             }
-            request(url, function (err, resp, body) {
-                var obj = JSON.parse(body);
+            var info = {
+                query: query,
+                page: req.query.page ? req.query.page : 1
+            };
+            Recharge.history(info).then(function (obj) {
                 res.render('rechargeHistory', {
                     title: '充值记录',
                     user: user,
                     recharges: obj.results,
                     pages: obj.pages
                 });
+            }, function(errMsg) {
+                res.send(errMsg);
             });
         });
 });

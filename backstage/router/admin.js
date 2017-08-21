@@ -29,10 +29,7 @@ router.use(function(req, res, next) {
             if(userIns.isAdmin()){
                 User.getSystemFunds().then(function (canUse) {
                     req.session.systemFunds = canUse;
-                    User.getSystemFreezeFunds().then(function(freezeFunds) {
-                        req.session.freezeFunds = freezeFunds;
-                        next();
-                    })
+                    next();
                 });
             }else{
                 console.log('不是管理员，不能非法登陆。。。。。。。。。。。。');
@@ -51,7 +48,6 @@ router.get('/home', function (req, res) {
                 res.render('adminHome', {
                     title: '管理员公告',
                     money: req.session.systemFunds,
-                    freezeFunds: req.session.freezeFunds,
                     placards: obj.results,
                     pages: obj.pages,
                     loginNum: users.length
@@ -81,75 +77,56 @@ router.get('/update/header/nav', function (req, res) {
 
     Feedback.open().find({status: '未处理'}).then(function (feedbacks) {
         updateNav.feedback = feedbacks.length;
-        getRechargeNum().then(function (num) {
-            updateNav.recharge = num;
+        Recharge.open().find({status: '充值中'}).then(function (recharges) {
+            updateNav.recharge = recharges.length;
             Withdraw.open().find({status: '未处理'}).then(function (withdraws) {
                 updateNav.withdraw = withdraws.length;
                 res.send(updateNav);
             });
-        })
+        });
     });
-
-    function getRechargeNum() {
-        return new Promise(function(resolve) {
-            var url = 'http://www.hongtupingtai.com/handle/get/recharge/num?type=handle';
-            request(url, function (err, resp, body) {
-                var obj = JSON.parse(body);
-                resolve(obj.num);
-            });
-        })
-    }
 });
 
 /*
  * manage funds
  * */
 router.get('/recharge', function (req, res) {
-    var url = 'http://www.hongtupingtai.com/handle/manage/recharge?type=handle' +
-        '&page=' + (req.query.page ? req.query.page : 1);
-    request(url, function (err, resp, body) {
-        var obj = JSON.parse(body);
-        if(obj.results){
+    Recharge.open().findPages({}, (req.query.page ? req.query.page : 1), {'createTime': -1})
+        .then(function(obj) {
             res.render('adminRecharge', {
                 title: '资金管理 / 充值记录',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 recharges: obj.results,
                 pages: obj.pages,
                 path: '/admin/recharge'
             });
-        }else{
-            res.send(obj);
-        }
-    });
+        }, function(error) {
+            res.send('查询充值记录失败： ' + error);
+        })
 });
 
 router.get('/search/recharge/by/alipayId', function (req, res) {
-    var url = 'http://www.hongtupingtai.com/handle/search/recharge/by/alipayId?type=handle' +
-        '&alipayId=' + req.query.alipayId.replace(/(^\s*)|(\s*$)/g,"");
-    request(url, function (err, resp, body) {
-        var obj = JSON.parse(body);
+    Recharge.open().find({
+        alipayId: req.query.alipayId.replace(/(^\s*)|(\s*$)/g,"")
+    }).then(function(obj) {
         res.render('adminRecharge', {
             title: '资金管理 / 充值记录',
             money: req.session.systemFunds,
-            freezeFunds: req.session.freezeFunds,
             recharges: obj,
             pages: 0,
             path: '/admin/recharge'
         });
-    });
+    }, function(error) {
+        res.send('查询充值记录失败： ' + error);
+    })
 });
 
 router.get('/search/user/recharge', function (req, res) {
-    if(req.query.userId){
-        req.session.searchRecharge = req.query.userId;
-    }
-    Recharge.findRechargeByUserId(req.session.searchRecharge, (req.query.page ? req.query.page : 1))
+    Recharge.findRechargeByUserId(req.query.userId, (req.query.page ? req.query.page : 1))
         .then(function (obj) {
             res.render('adminRecharge', {
                 title: '资金管理 / 充值记录',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 recharges: obj.results,
                 pages: obj.pages,
                 path: '/admin/recharge'
@@ -164,36 +141,40 @@ router.get('/hand/recharge', function (req, res) {
     if(isNaN(msg.funds)) {
         res.send('充值金额必须是数字。。。。。。');
     }else {
-        var url = 'http://www.hongtupingtai.com/handle/hand/recharge?' +
-            'alipayId=' + msg.id +
-            '&funds=' + msg.funds;
-        request(url, function (err, resp, body) {
-            var result = JSON.parse(body);
-            if(result.isOk) {
-                User.open().findById(result.userId)
+        var vipDays = Recharge.vipDays(msg.funds);
+        Recharge.open().findById(msg.id).then(function (record) {
+            if (record.isRecharge) {
+                res.redirect(msg.url + '?date=' + new Date().getTime());
+            } else {
+                User.open().findById(record.userId)
                     .then(function (user) {
                         User.open().updateById(user._id, {
                             $set: {
-                                funds: (parseFloat(user.funds) + parseFloat(msg.funds)).toFixed(4)
+                                funds: (parseFloat(user.funds) + parseFloat(msg.funds)).toFixed(4),
+                                vipTime: moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
                             }
                         }).then(function () {
-                            res.redirect(msg.url + '?date=' + new Date().getTime());
+                            Recharge.open().updateById(record._id, {$set: {
+                                funds: parseFloat(msg.funds),
+                                isRecharge: true,
+                                status: '成功',
+                                vipDays: vipDays,
+                                userNowFunds: (parseFloat(record.userOldFunds) + parseFloat(msg.funds)).toFixed(4)
+                            }}).then(function () {
+                                res.redirect(msg.url + '?date=' + new Date().getTime());
+                            });
                         });
                     });
-            }else{
-                res.redirect(msg.url + '?date=' + new Date().getTime());
             }
         });
     }
 });
 
 router.get('/hand/recharge/refuse', function (req, res) {
-    var url = 'http://www.hongtupingtai.com/handle/hand/recharge/refuse?' +
-        'alipayId=' + req.query.id +
-        '&msg=' + encodeURIComponent(req.query.info);
-    request(url, function (err, resp, body) {
-        res.redirect(req.query.url + '?date=' + new Date().getTime());
-    });
+    var msg = req.query;
+    Recharge.handRefuse(msg.id, msg.info).then(function() {
+        res.redirect(msg.url);
+    })
 });
 
 router.get('/withdraw/wait', function (req, res) {
@@ -202,7 +183,6 @@ router.get('/withdraw/wait', function (req, res) {
             res.render('adminWithdrawWait', {
                 title: '资金管理 / 提现管理 / 待处理',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 withdraws: obj.results,
                 pages: obj.pages,
                 path: '/admin/withdraw/wait'
@@ -216,7 +196,6 @@ router.get('/withdraw/already', function (req, res) {
             res.render('adminWithdrawAlre', {
                 title: '资金管理 / 提现管理 / 已处理',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 withdraws: obj.results,
                 pages: obj.pages,
                 path: '/admin/withdraw/already'
@@ -249,7 +228,6 @@ router.get('/manage/user', function (req, res) {
             res.render('adminManageUser', {
                 title: '用户管理',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 users: obj.results,
                 pages: obj.pages
             });
@@ -266,7 +244,6 @@ router.get('/search/user', function (req, res) {
             res.render('adminManageUser', {
                 title: '用户管理',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 users: obj.results,
                 pages: obj.pages
             });
@@ -281,7 +258,6 @@ router.get('/manage/user/edit', function(req, res) {
             res.render('adminManageUserEdit', {
                 title: '用户管理 / 编辑用户信息',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 user: user
             });
         }, function (error) {
@@ -329,7 +305,6 @@ router.get('/manage/user/del', function(req, res) {
 router.get('/manage/user/add', function (req, res) {
     res.render('adminManageUserAdd', {
         title: '设置 / 用户管理 / 添加用户',
-        freezeFunds: req.session.freezeFunds,
         money: req.session.systemFunds
     })
 });
@@ -368,7 +343,6 @@ router.get('/lowerUsers/of/user', function (req, res) {
                         res.render('adminLowerUserOfUser', {
                             title: '用户管理 / ' + parent.username + '的下级用户',
                             money: req.session.systemFunds,
-                            freezeFunds: req.session.freezeFunds,
                             users: obj
                         });
                     }, function(error) {
@@ -378,7 +352,6 @@ router.get('/lowerUsers/of/user', function (req, res) {
                 res.render('adminLowerUserOfUser', {
                     title: '用户管理 / ' + parent.username + '的下级用户',
                     money: req.session.systemFunds,
-                    freezeFunds: req.session.freezeFunds,
                     users: []
                 });
             }
@@ -393,7 +366,6 @@ router.get('/lowerUsers/of/user', function (req, res) {
 router.get('/placard/send', function (req, res) {
     res.render('adminPlacardSend', {
         title: '公告管理 / 发布公告',
-        freezeFunds: req.session.freezeFunds,
         money: req.session.systemFunds
     })
 });
@@ -417,7 +389,6 @@ router.get('/placard/history', function (req, res) {
             res.render('adminPlacardHistory', {
                 title: '公告管理 / 历史公告',
                 money: req.session.systemFunds,
-                freezeFunds: req.session.freezeFunds,
                 placards: obj.results,
                 pages: obj.pages
             });
@@ -438,7 +409,6 @@ router.get('/placard/history/del', function (req, res) {
 router.get('/placard/add', function (req, res) {
     res.render('adminPlacardAdd', {
         title: '公告管理 / 添加公告类型',
-        freezeFunds: req.session.freezeFunds,
         money: req.session.systemFunds
     })
 });
@@ -452,7 +422,6 @@ router.get('/feedback/wait', function (req, res) {
         res.render('adminFeedbackWait', {
             title: '问题反馈 / 待处理',
             money: req.session.systemFunds,
-            freezeFunds: req.session.freezeFunds,
             feedbacks: obj.results,
             pages: obj.pages
         });
@@ -473,7 +442,6 @@ router.get('/feedback/already', function (req, res) {
         res.render('adminFeedbackAlre', {
             title: '问题反馈 / 已处理',
             money: req.session.systemFunds,
-            freezeFunds: req.session.freezeFunds,
             feedbacks: obj.results,
             pages: obj.pages
         });
