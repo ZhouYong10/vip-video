@@ -325,8 +325,9 @@ router.post('/manage/user/add', function (req, res) {
 router.get('/lowerUsers/of/user', function (req, res) {
     User.open().findById(req.query.userId)
         .then(function (parent) {
-            if(parent.children && parent.children.length > 0){
-                User.open().find({_id: {$in: parent.children}})
+            console.log(parent, '====================');
+            if(parent.childrenId.length > 0){
+                User.open().find({_id: {$in: parent.childrenId}})
                     .then(function(obj) {
                         res.render('adminLowerUserOfUser', {
                             title: '用户管理 / ' + parent.username + '的下级用户',

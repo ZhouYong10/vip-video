@@ -1,4 +1,5 @@
 var express = require('express');
+require('./init-user').initUser();
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -26,11 +27,9 @@ var Placard = require('./models/Placard');
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-require('./init-user').initUser();
+
 var Cleaners = require('./models/Cleaners');
 Cleaners.timeOfDay();
-
-
 
 passport.serializeUser(function (user, done) {
   done(null, user._id);
@@ -59,6 +58,9 @@ passport.use(new LocalStrategy({
     }
   }
 
+    console.log(username,'username,11111111111111111')
+    console.log(password,'password,22222222222222222222')
+    console.log(req.body.securityCode,'securityCode,333333333333333333333')
   //实现用户名或邮箱登录
   //这里判断提交上的username是否含有@，来决定查询的字段是哪一个
   //var criteria = (username.indexOf('@') === -1) ? {username: username} : {email: username};
@@ -215,6 +217,7 @@ app.post('/check/securityCode', function (req, res) {
 
 app.post('/sign/in', function (req, res, next) {
     var info = req.body;
+    info.username = info.username.replace(/(^\s*)|(\s*$)/g, "");
     if(!info.readme) {
         res.send({
             isOK: false,
@@ -231,7 +234,7 @@ app.post('/sign/in', function (req, res, next) {
         });
         return;
     }
-    if(info.username.replace(/(^\s*)|(\s*$)/g, "") == ''){
+    if(info.username == ''){
         res.send({
             isOK: false,
             field: 'username',
@@ -263,8 +266,7 @@ app.post('/sign/in', function (req, res, next) {
         });
         return;
     }
-
-    User.open().findOne({username: info.username.replace(/(^\s*)|(\s*$)/g, "")})
+    User.open().findOne({username: info.username})
         .then(function (user) {
             if (user) {
                 res.send({
@@ -273,28 +275,24 @@ app.post('/sign/in', function (req, res, next) {
                     message: '用户名: ' + info.username + ' 已经存在！'
                 });
                 return;
-            }
-
-            var invitationCode = info.invitation;
-            var userInfo = {
-                username: info.username.replace(/(^\s*)|(\s*$)/g, ""),
-                password: info.password,
-                qq: info.qq,
-                readme: info.readme
-            };
-
-            if (invitationCode) {
+            } 
+            if (info.invitation) {
                 try{
-                    var userId = Utils.decipher(invitationCode, Utils.invitationKey);
-                    User.open().findById(userId)
+                    var parentId = Utils.decipher(info.invitation, Utils.invitationKey);
+                    User.open().findById(parentId)
                         .then(function (result) {
                             if(result) {
-                                var parent = User.wrapToInstance(result);
-                                userInfo.parent = parent.username;
-                                userInfo.parentID = parent._id;
-                                User.createUser(userInfo, function (user) {
-                                    parent.addChild(user[0]._id);
-                                    User.open().updateById(parent._id, {
+                                User.createUser({
+                                    username: info.username,
+                                    password: info.password,
+                                    qq: info.qq,
+                                    readme: info.readme,
+                                    parentId: result._id,
+                                    parentName: result.username
+                                }).then(function (user) {
+                                    var parent = User.new(result);
+                                    parent.addChild(user._id);
+                                    User.open().updateById(result._id, {
                                         $set: parent
                                     }).then(function () {
                                         login(req, res, next);
@@ -323,6 +321,8 @@ app.post('/sign/in', function (req, res, next) {
                 });
             }
         });
+
+
 });
 
 //对外公共接口

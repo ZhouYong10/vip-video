@@ -41,7 +41,8 @@ User.extend({
             lastLoginTime: info.lastLoginTime || '',
             qq: info.qq || '',
             loginNum: info.loginNum || 0,
-            isLogin: info.isLogin || false
+            isLogin: info.isLogin || false,
+            readme: info.readme || false
         };
         return User.wrapToInstance(user);
     },
@@ -56,19 +57,15 @@ User.extend({
             })
         })
     },
-    createUser: function(user, resolve, reject) {
-        user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
-        user.funds = 0;
-        user.status = '正常';
-        user.role = 'user';
-        user.roleName = '用户';
-        user.vipTime = moment().format('YYYY-MM-DD HH:mm:ss');
-        user.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
-
-        User.open().insert(user).then(function(result) {
-            resolve(result);
-        }, function(error) {
-            reject(error);
+    createUser: function(userInfo, resolve, reject) {
+        return new Promise(function(resolve) {
+            userInfo.password = bcrypt.hashSync(userInfo.password, bcrypt.genSaltSync(10));
+            userInfo.vipTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            userInfo.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
+            var user = User.new(userInfo);
+            User.open().insert(user).then(function(result) {
+                resolve(result[0]);
+            })
         })
     },
     removeUser: function(id) {
@@ -146,11 +143,8 @@ User.include({
         }
     },
     addChild: function(id) {
-        if(this.children == undefined) {
-            this.children = [];
-        }
-        this.children.unshift(id);
-        this.childNum = this.children.length;
+        this.childrenId.unshift(id);
+        this.childrenNum = this.childrenId.length;
     },
     removeChild: function(id) {
         var self = this;

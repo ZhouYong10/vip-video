@@ -47,6 +47,14 @@
                                 </div>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
+                                        角色
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.roleName %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
                                         密码
                                     </label>
                                     <div class="am-u-sm-8">
@@ -55,7 +63,7 @@
                                 </div>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-4 am-form-label">
-                                        账户金额
+                                        充值金额
                                     </label>
                                     <div class="am-u-sm-8">
                                         <input class="am-radius am-input-sm" type="text" id="funds"
@@ -88,7 +96,7 @@
                                         上级
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.parent %></p>
+                                        <p class="user-info"><%= user.parentName %></p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -96,7 +104,7 @@
                                         下级/人
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.childNum %></p>
+                                        <p class="user-info"><%= user.childrenNum %></p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -104,7 +112,43 @@
                                         下级返现
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.profit %></p>
+                                        <p class="user-info"><%= user.childrenProfit %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        可提现金额
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.canWithdraw %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        已提现金额
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.alreadyWithdraw %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        登陆次数
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <p class="user-info"><%= user.loginNum %></p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-4 am-form-label">
+                                        是否在线
+                                    </label>
+                                    <div class="am-u-sm-8">
+                                        <% if(user.isLogin){ %>
+                                        <p class="user-info">在线</p>
+                                        <% }else{ %>
+                                        <p class="user-info">离线</p>
+                                        <% } %>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -130,24 +174,6 @@
                                     <div class="am-u-sm-8">
                                         <input class="am-radius am-input-sm" type="text" id="qq"
                                                name="qq" value="<%= user.qq %>">
-                                    </div>
-                                </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-4 am-form-label">
-                                        电话
-                                    </label>
-                                    <div class="am-u-sm-8">
-                                        <input class="am-radius am-input-sm" type="text" id="phone"
-                                               name="phone" value="<%= user.phone %>">
-                                    </div>
-                                </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-4 am-form-label">
-                                        邮箱
-                                    </label>
-                                    <div class="am-u-sm-8">
-                                        <input class="am-radius am-input-sm" type="email" id="email"
-                                               name="email" value="<%= user.email %>">
                                     </div>
                                 </div>
                                 <div class="am-form-group">
