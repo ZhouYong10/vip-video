@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="widget-body am-fr">
-                            <div class="am-form am-form-inline">
+                            <div class="am-form am-form-inline" style="padding-left: 12px;">
                                 <a href="/user/changePwd" class="am-btn am-btn-primary am-radius am-btn-sm">
                                     修改密码
                                 </a>
@@ -75,36 +75,40 @@
                                         下级人数
                                     </label>
                                     <div class="am-u-sm-9">
-                                        <p class="user-info"><%= user.childNum %></p>
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-form-label">
-                                        下级返利
-                                    </label>
-                                    <div class="am-u-sm-9">
                                         <p class="user-info">
-                                            <a href="/user/lowerUser/profit" title="显示下级返利详情">￥ <%= user.profit %></a>
+                                            <a href="/user/lowerUser" title="显示下级详情"><%= user.childrenNum %></a>
                                         </p>
                                     </div>
                                 </div>
 
                                 <div class="am-form-group">
                                     <label class="am-u-sm-3 am-form-label">
-                                        注册时间
+                                        下级返现
                                     </label>
                                     <div class="am-u-sm-9">
-                                        <p class="user-info"><%= user.createTime %></p>
+                                        <p class="user-info">
+                                            <a href="/user/lowerUser/profit" title="显示下级返利详情">￥ <%= user.childrenProfit %></a>
+                                        </p>
                                     </div>
                                 </div>
-
                                 <div class="am-form-group">
                                     <label class="am-u-sm-3 am-form-label">
-                                        最后登陆
+                                        可提现金额
                                     </label>
                                     <div class="am-u-sm-9">
-                                        <p class="user-info"><%= user.lastLoginTime %></p>
+                                        <p class="user-info">
+                                            ￥ <%= user.canWithdraw %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-3 am-form-label">
+                                        已提现金额
+                                    </label>
+                                    <div class="am-u-sm-9">
+                                        <p class="user-info">
+                                            <a href="/user/withdraw/history" title="显示提现记录详情">￥ <%= user.alreadyWithdraw %></a>
+                                        </p>
                                     </div>
                                 </div>
 
@@ -116,28 +120,6 @@
                                         <p class="user-info disable" v-if="!isEdit"><%= user.qq %></p>
                                         <input type="text" class="tpl-form-input" id="five" name="qq"
                                                value="<%= user.qq %>" v-if="isEdit">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-form-label">
-                                        电话
-                                    </label>
-                                    <div class="am-u-sm-9">
-                                        <p class="user-info disable" v-if="!isEdit"><%= user.phone %></p>
-                                        <input type="text" class="tpl-form-input" id="six" name="phone"
-                                               value="<%= user.phone %>" v-if="isEdit">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-form-label">
-                                        邮箱
-                                    </label>
-                                    <div class="am-u-sm-9">
-                                        <p class="user-info disable" v-if="!isEdit"><%= user.email %></p>
-                                        <input type="text" class="tpl-form-input" id="seven" name="email"
-                                               value="<%= user.email %>" v-if="isEdit">
                                     </div>
                                 </div>
 
