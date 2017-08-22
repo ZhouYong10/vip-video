@@ -105,7 +105,8 @@ function login(req, res, next) {
         $set: {
           isLogin: true,
           lastLoginTime: moment().format('YYYY-MM-DD HH:mm:ss')
-        }
+        },
+        $inc: {loginNum: 1}
       }).then(function () {
         var aim = {
           isOK: true
@@ -275,7 +276,7 @@ app.post('/sign/in', function (req, res, next) {
                     message: '用户名: ' + info.username + ' 已经存在！'
                 });
                 return;
-            } 
+            }
             if (info.invitation) {
                 try{
                     var parentId = Utils.decipher(info.invitation, Utils.invitationKey);
