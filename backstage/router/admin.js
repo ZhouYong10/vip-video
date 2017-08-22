@@ -148,10 +148,30 @@ router.get('/hand/recharge', function (req, res) {
             } else {
                 User.open().findById(record.userId)
                     .then(function (user) {
+
+                        var vipTime = Date.parse(user.vipTime);
+                        var nowTime = new Date().getTime();
+                        if(vipTime - nowTime > 0){
+                            vipTime = moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss');
+                        }else{
+                            vipTime = moment().add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        var profitToParent = (parseFloat(msg.funds) * 0.2).toFixed(4);
+                        if(user.parentId) {
+                            User.open().findById(user.parentId).then(function(parent) {
+                                User.open().updateById(parent._id, {
+                                    $set: {
+                                        childrenProfit: (parseFloat(parent.childrenProfit) + parseFloat(profitToParent)).toFixed(4),
+                                        canWithdraw: (parseFloat(parent.canWithdraw) + parseFloat(profitToParent)).toFixed(4)
+                                    }
+                                });
+                            })
+                        }
                         User.open().updateById(user._id, {
                             $set: {
                                 funds: (parseFloat(user.funds) + parseFloat(msg.funds)).toFixed(4),
-                                vipTime: moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
+                                profitToParent: (parseFloat(user.profitToParent) + parseFloat(profitToParent)).toFixed(4),
+                                vipTime: vipTime
                             }
                         }).then(function () {
                             Recharge.open().updateById(record._id, {$set: {

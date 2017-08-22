@@ -34,53 +34,46 @@ Withdraw.extend({
         })
     },
     saveOne: function(withdraw, userId) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function(resolve) {
             if(withdraw.funds < 5) {
-                resolve('请不要跳过页面验证提现，提现不足5元仍然不能提现哦。。。。');
+                resolve('请不要跳过页面验证，不足5元仍然不能提现哦。。。。');
             }
             User.open().findById(userId)
                 .then(function(user) {
-                    var userFunds = (parseFloat(user.funds) - parseFloat(withdraw.funds)).toFixed(4);
-                    withdraw.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
-                    withdraw.status = '未处理';
-                    withdraw.user = user.username;
-                    withdraw.userId = user._id;
-                    withdraw.userFunds = userFunds;
-                    if(userFunds >= 0){
+                    var canWithdraw = (parseFloat(user.canWithdraw) - parseFloat(withdraw.funds)).toFixed(4);
+                    if(canWithdraw >= 0){
+                        withdraw.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
+                        withdraw.status = '未处理';
+                        withdraw.beforWithdraw = user.canWithdraw;
+                        withdraw.username = user.username;
+                        withdraw.userId = user._id;
+                        withdraw.afterWithdraw = canWithdraw;
                         Withdraw.open().insert(withdraw)
-                            .then(function(results) {
+                            .then(function() {
                                 User.open().updateById(user._id, {
                                     $set: {
-                                        funds: userFunds,
-                                        freezeFunds: (parseFloat(user.freezeFunds) + parseFloat(withdraw.funds)).toFixed(4)
+                                        canWithdraw: canWithdraw,
+                                        alreadyWithdraw: (parseFloat(user.alreadyWithdraw) + parseFloat(withdraw.funds)).toFixed(4)
                                     }
                                 }).then(function () {
                                     resolve();
                                 });
                             })
                     }else {
-                        resolve('请不要跳过页面验证提现，你的余额不足仍然不能提现哦。。。。');
+                        resolve('请不要跳过页面验证，你的余额不足仍然不能提现。。。。');
                     }
                 })
         });
     },
     complete: function(id) {
        return new Promise(function(resolve, reject) {
-           Withdraw.open().findById(id).then(function (withdraw) {
-               User.open().findById(withdraw.userId).then(function(user) {
-                   Withdraw.open().updateById(withdraw._id, {$set: {
-                       status: '成功',
-                       endTime: moment().format('YYYY-MM-DD HH:mm:ss')
-                   }}).then(function() {
-                       User.open().updateById(user._id, {
-                           $set: {
-                               freezeFunds: (parseFloat(user.freezeFunds) - parseFloat(withdraw.funds)).toFixed(4)
-                           }
-                       }).then(function () {
-                           resolve();
-                       });
-                   })
-               })
+           Withdraw.open().updateById(id, {
+               $set: {
+                   status: '成功',
+                   endTime: moment().format('YYYY-MM-DD HH:mm:ss')
+               }
+           }).then(function () {
+               resolve();
            });
        })
     },
@@ -95,8 +88,8 @@ Withdraw.extend({
                     .then(function (user) {
                         User.open().updateById(user._id, {
                             $set: {
-                                funds: (parseFloat(user.funds) + parseFloat(funds)).toFixed(4),
-                                freezeFunds: (parseFloat(user.freezeFunds) - parseFloat(funds)).toFixed(4)
+                                canWithdraw: (parseFloat(user.canWithdraw) + parseFloat(funds)).toFixed(4),
+                                alreadyWithdraw: (parseFloat(user.alreadyWithdraw) - parseFloat(funds)).toFixed(4)
                             }
                         }).then(function () {
                             resolve();

@@ -9,7 +9,7 @@ Vue.use(require('vue-validator'));
 new Vue({
     el: '#withdrawAdd',
     data: {
-        userFunds: ''
+        canWithdraw: ''
     },
     validators: {
         isfloat: Utils.isfloat,
@@ -18,7 +18,7 @@ new Vue({
         },
         mintotal: function(funds) {
             var val = funds.trim();
-            return val == '' ? true : parseFloat(val) <= parseFloat(this.userFunds);
+            return val == '' ? true : parseFloat(val) <= parseFloat(this.canWithdraw);
         }
     }
 });

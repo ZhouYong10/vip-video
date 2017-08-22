@@ -78,9 +78,29 @@ router.post('/recharge', function (req, res) {
             alipayInfo.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
             Recharge.record(alipayInfo)
                 .then(function (alipay) {
+                    var vipTime = Date.parse(user.vipTime);
+                    var nowTime = new Date().getTime();
+                    if(vipTime - nowTime > 0){
+                        vipTime = moment(user.vipTime).add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss');
+                    }else{
+                        vipTime = moment().add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    var profitToParent = (parseFloat(alipay.funds) * 0.2).toFixed(4);
+
+                    if(user.parentId) {
+                        User.open().findById(user.parentId).then(function(parent) {
+                            User.open().updateById(parent._id, {
+                                $set: {
+                                    childrenProfit: (parseFloat(parent.childrenProfit) + parseFloat(profitToParent)).toFixed(4),
+                                    canWithdraw: (parseFloat(parent.canWithdraw) + parseFloat(profitToParent)).toFixed(4)
+                                }
+                            });
+                        })
+                    }
                     User.open().updateById(user._id, {$set: {
                         funds: (parseFloat(user.funds) + parseFloat(alipay.funds)).toFixed(4),
-                        vipTime: moment(user.vipTime).add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss')
+                        profitToParent: (parseFloat(user.profitToParent) + parseFloat(profitToParent)).toFixed(4),
+                        vipTime: vipTime
                     }}).then(function() {
                         res.send({
                             isOK: true,

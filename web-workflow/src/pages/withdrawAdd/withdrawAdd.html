@@ -51,7 +51,7 @@
                                     <div class="am-form-group">
                                         <label for="fansID" class="am-u-sm-4 am-u-lg-2 am-form-label"><span class="tips">* </span>提现金额</label>
                                         <div class="am-u-sm-8 am-u-lg-10">
-                                            <input type="hidden" value="<%= user.funds %>" v-model="userFunds">
+                                            <input type="hidden" value="<%= user.canWithdraw %>" v-model="canWithdraw">
                                             <input id="fansID" class="am-radius am-input-sm" type="text"
                                                    placeholder="请填写提现金额，为保证提现成功，尽量提取正整数。" name="funds"
                                                    v-validate:funds="{required: true, isfloat: true, mintotal: true, mustOne: true}">
