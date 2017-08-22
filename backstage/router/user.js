@@ -296,8 +296,8 @@ router.get('/lowerUser', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (parent) {
             var invitation = 'http://' + req.headers.host + '/sign/in?invitation=' + Utils.cipher(parent._id + '', Utils.invitationKey);
-            if(parent.children && parent.children.length > 0){
-                User.open().findPages({_id: {$in: parent.children}}, (req.query.page ? req.query.page : 1))
+            if(parent.childrenId.length > 0){
+                User.open().findPages({_id: {$in: parent.childrenId}}, (req.query.page ? req.query.page : 1))
                     .then(function(obj) {
                         res.render('lowerUser', {
                             title: '我的下级用户',
