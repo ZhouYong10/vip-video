@@ -55,11 +55,11 @@
                                         <th>创建时间</th>
                                         <th>角色</th>
                                         <th>用户名</th>
-                                        <th>状态</th>
-                                        <th>账户金额</th>
-                                        <th>VIP日期</th>
                                         <th>上级</th>
                                         <th>下级/人</th>
+                                        <th>状态</th>
+                                        <th>充值金额</th>
+                                        <th>VIP日期</th>
                                         <th>最后登陆时间</th>
                                         <th>操作</th>
                                     </tr>
@@ -72,6 +72,12 @@
                                         <td><%= users[i].createTime %></td>
                                         <td><%= users[i].roleName %></td>
                                         <td><%= users[i].username %></td>
+                                        <td><%= users[i].parentName %></td>
+                                        <td>
+                                            <a href="/admin/lowerUsers/of/user?userId=<%= users[i]._id %>">
+                                                <%= users[i].childrenNum %>
+                                            </a>
+                                        </td>
                                         <td><%= users[i].status %></td>
                                         <td>
                                             <a href="/admin/search/user/recharge?userId=<%= users[i]._id %>">
@@ -80,12 +86,6 @@
                                         </td>
                                         <td>
                                             <%= users[i].vipTime %>
-                                        </td>
-                                        <td><%= users[i].parentName %></td>
-                                        <td>
-                                            <a href="/admin/lowerUsers/of/user?userId=<%= users[i]._id %>">
-                                                <%= users[i].childrenNum %>
-                                            </a>
                                         </td>
                                         <td><%= users[i].lastLoginTime %></td>
                                         <td>
