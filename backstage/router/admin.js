@@ -285,47 +285,15 @@ router.get('/user/edit/reset/password', function (req, res) {
 });
 
 router.get('/manage/user/del', function(req, res) {
-    User.removeUser(req.query.id).then(function (username) {
+    User.removeUser(req.query.id).then(function () {
         res.redirect('/admin/manage/user');
     });
 });
 
-router.get('/manage/user/add', function (req, res) {
-    res.render('adminManageUserAdd', {
-        title: '设置 / 用户管理 / 添加用户',
-        money: req.session.systemFunds
-    })
-});
-
-router.post('/manage/user/add', function (req, res) {
-    var userInfo = req.body;
-    userInfo.username = userInfo.username.replace(/(^\s*)|(\s*$)/g, "");
-    User.open().findById(req.session.passport.user)
-        .then(function(result) {
-            var parent = User.wrapToInstance(result);
-            userInfo.parent = parent.username;
-            userInfo.parentID = parent._id;
-            User.createUser(userInfo, function (user) {
-                parent.addChild(user[0]._id);
-                User.open().updateById(parent._id, {
-                    $set: parent
-                }).then(function (result) {
-                    res.redirect('/admin/manage/user');
-                }, function(error) {
-                    throw (new Error(error));
-                });
-            }, function (error) {
-                res.send('添加下级用户失败： ' + error);
-            });
-        }, function(error) {
-            res.send('查询上级用户信息失败： ' + error);
-        })
-});
 
 router.get('/lowerUsers/of/user', function (req, res) {
     User.open().findById(req.query.userId)
         .then(function (parent) {
-            console.log(parent, '====================');
             if(parent.childrenId.length > 0){
                 User.open().find({_id: {$in: parent.childrenId}})
                     .then(function(obj) {
