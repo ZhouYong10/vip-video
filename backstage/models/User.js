@@ -8,6 +8,7 @@ var moment = require('moment');
 
 
 var User = new Class();
+
 User.role = {
     admin: '管理员',
     user: '用户'
@@ -18,6 +19,31 @@ User.extend(dbWrap);
 User.extend({
     open: function() {
         return User.openCollection('User');
+    },
+    new: function(info) {
+        var user = {
+            role: info.role || 'user',
+            roleName: info.roleName || '用户',
+            username: info.username || '',
+            password: info.password || '',
+            funds: info.funds || 0,
+            profitToParent: info.profitToParent || 0,
+            status: info.status || '正常',
+            vipTime: info.vipTime || '',
+            parentId: info.parentId || '',
+            parentName: info.parentName || '',
+            childrenId: info.childrenId || [],
+            childrenNum: info.childrenNum || 0,
+            childrenProfit: info.childrenProfit || 0,
+            canWithdraw: info.canWithdraw || 0,
+            alreadyWithdraw: info.alreadyWithdraw || 0,
+            createTime: info.createTime || '',
+            lastLoginTime: info.lastLoginTime || '',
+            qq: info.qq || '',
+            loginNum: info.loginNum || 0,
+            isLogin: info.isLogin || false
+        };
+        return User.wrapToInstance(user);
     },
     getSystemFunds: function() {
         return new Promise(function(resolve, reject) {

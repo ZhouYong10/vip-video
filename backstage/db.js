@@ -5,10 +5,6 @@ var mongoskin = require('mongoskin');
 var dbConf = require('./db-conf');
 var db = null;
 
-require('./init-user').initUser(getCollection('User'));
-
-
-
 function getCollection(collectionName) {
     if(!db) {
         //连接本机mongodb ,使用帐号密码连接 mongoskin.db('username:password@服务器ip/数据库名

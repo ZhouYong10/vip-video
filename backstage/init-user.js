@@ -4,50 +4,39 @@
 
 var bcrypt = require('bcryptjs');
 var moment = require('moment');
+var User = require('./models/User');
 
-var initUsers = [{
-    username: 'admin',
-    password: bcrypt.hashSync('admin', bcrypt.genSaltSync(10)),
-    funds: 0,
+var initUsers = [User.new({
     role: 'admin',
     roleName: '管理员',
-    status: '正常',
+    username: 'admin',
+    password: bcrypt.hashSync('admin', bcrypt.genSaltSync(10)),
     vipTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     createTime: moment().format('YYYY-MM-DD HH:mm:ss')
-}, {
+}), User.new({
     username: '演示',
     password: bcrypt.hashSync('yanshi', bcrypt.genSaltSync(10)),
-    funds: 0,
-    role: 'user',
-    roleName: '用户',
-    status: '正常',
     vipTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     createTime: moment().format('YYYY-MM-DD HH:mm:ss')
-}];
+})];
 
 
-exports.initUser = function(User) {
+exports.initUser = function() {
     initUsers.map(function(user) {
-        User.findOne({username: user.username, role: user.role}, function(error, result) {
-            if(error) {
-                return console.log('初始化查询用户信息失败： ' + error);
-            }
-            if(result) {
-                user = result;
-                delete user._id;
-            }
-            User.findAndModify({
-                username: user.username
-            }, [], {$set: user}, {
-                new: true,
-                upsert: true
-            }, function(error, result) {
-                if(error) {
-                    console.log('添加初始化账户失败： ' + error);
-                }else{
-                    console.log('添加初始化账户成功!');
+        User.open().findOne({username: user.username, role: user.role})
+            .then(function (result) {
+                if (result) {
+                    user = result;
+                    delete user._id;
                 }
-            })
-        })
+                User.open().update({username: user.username}, {$set: user})
+                    .then(function (result) {
+                        console.log('添加初始化账户成功!');
+                    }, function (err) {
+                        console.log('添加初始化账户失败： ' + err);
+                    });
+            }, function(err) {
+                console.log('初始化查询用户信息失败： ' + err);
+            });
     })
 };

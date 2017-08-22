@@ -26,7 +26,7 @@ var Placard = require('./models/Placard');
 var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
+require('./init-user').initUser();
 var Cleaners = require('./models/Cleaners');
 Cleaners.timeOfDay();
 

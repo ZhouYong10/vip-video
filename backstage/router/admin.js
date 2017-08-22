@@ -286,19 +286,7 @@ router.get('/user/edit/reset/password', function (req, res) {
 
 router.get('/manage/user/del', function(req, res) {
     User.removeUser(req.query.id).then(function (username) {
-        Order.open().find({
-            user: username,
-            status: {$nin: ['已完成']}
-        }).then(function (orders) {
-                for (var i = 0; i < orders.length; i++) {
-                    Order.open().updateById(orders[i]._id, {
-                        $set: {
-                            status: '已完成'
-                        }
-                    });
-                }
-                res.redirect('/admin/manage/user');
-            });
+        res.redirect('/admin/manage/user');
     });
 });
 
