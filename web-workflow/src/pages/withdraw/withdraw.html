@@ -41,7 +41,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>申请日期</th>
+                                        <th>之前金额</th>
                                         <th>提现金额</th>
+                                        <th>之后金额</th>
                                         <th>支付宝账户</th>
                                         <th>支付宝昵称</th>
                                         <th>状态</th>
@@ -54,7 +56,9 @@
                                     <tr>
                                         <td><%= i + 1 %></td>
                                         <td><%= withdraws[i].createTime %></td>
+                                        <td><%= withdraws[i].beforWithdraw %></td>
                                         <td><%= withdraws[i].funds %></td>
+                                        <td><%= withdraws[i].afterWithdraw %></td>
                                         <td><%= withdraws[i].alipayCount %></td>
                                         <td><%= withdraws[i].alipayName %></td>
                                         <td><%= withdraws[i].status %></td>

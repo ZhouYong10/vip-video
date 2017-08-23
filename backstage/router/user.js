@@ -21,9 +21,7 @@ var moment = require('moment');
 router.get('/vip/video', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            var vipTime = Date.parse(user.vipTime);
-            var nowTime = new Date().getTime();
-            if(vipTime - nowTime > 0){
+            if(User.isVip(user)){
                 res.render('vip',  {
                     user: user
                 });
@@ -40,9 +38,7 @@ router.get('/vip/video/teach', function (req, res) {
 router.get('/vip/video/url', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            var vipTime = Date.parse(user.vipTime);
-            var nowTime = new Date().getTime();
-            if(vipTime - nowTime > 0){
+            if(User.isVip(user)){
                 res.send({
                     isOk: true,
                     address: 'http://www.wmxz.wang/video.php?url='
@@ -55,7 +51,6 @@ router.get('/vip/video/url', function (req, res) {
             }
         });
 });
-
 
 router.get('/recharge', function (req, res) {
     User.open().findById(req.session.passport.user)
@@ -78,9 +73,8 @@ router.post('/recharge', function (req, res) {
             alipayInfo.createTime = moment().format('YYYY-MM-DD HH:mm:ss');
             Recharge.record(alipayInfo)
                 .then(function (alipay) {
-                    var vipTime = Date.parse(user.vipTime);
-                    var nowTime = new Date().getTime();
-                    if(vipTime - nowTime > 0){
+                    var vipTime;
+                    if(User.isVip(user)){
                         vipTime = moment(user.vipTime).add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss');
                     }else{
                         vipTime = moment().add('days', alipay.vipDays).format('YYYY-MM-DD HH:mm:ss')
@@ -112,7 +106,6 @@ router.post('/recharge', function (req, res) {
                 })
         });
 });
-
 
 router.get('/recharge/history', function (req, res) {
     User.open().findById(req.session.passport.user)
@@ -203,14 +196,10 @@ router.get('/search/consume', function (req, res) {
 router.get('/info', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            Profit.getProfitTotal({userId: user._id})
-                .then(function (profit) {
-                    user.profit = profit;
-                    res.render('userInfo', {
-                        title: '我的详细信息',
-                        user: user
-                    });
-                });
+            res.render('userInfo', {
+                title: '我的详细信息',
+                user: user
+            });
         }, function (error) {
             res.send('获取用户详细信息失败： ' + error);
         });
@@ -347,9 +336,9 @@ router.get('/search/lowerUser', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (parent) {
             var invitation = req.headers.host + '/sign/in?invitation=' + Utils.cipher(parent._id + '', Utils.invitationKey);
-            if(parent.children && parent.children.length > 0){
+            if(parent.childrenId.length > 0){
                 User.open().findPages({
-                    _id: {$in: parent.children},
+                    _id: {$in: parent.childrenId},
                     username: new RegExp(req.query.username)
                 }, (req.query.page ? req.query.page : 1))
                     .then(function(obj) {
@@ -380,42 +369,18 @@ router.get('/search/lowerUser', function (req, res) {
 router.get('/lowerUser/profit', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            Profit.getProfitTotal({userId: user._id})
-                .then(function(totalProfit) {
-                    Profit.open().findPages({userId: user._id}, (req.query.page ? req.query.page : 1))
-                        .then(function(obj) {
-                            res.render('lowerUserProfit', {
-                                title: '下级返利详情',
-                                user: user,
-                                profits: obj.results,
-                                pages: obj.pages,
-                                totalProfit: totalProfit
-                            });
-                        })
-                })
-        });
-});
-
-router.get('/search/lowerUser/profit', function (req, res) {
-    User.open().findById(req.session.passport.user)
-        .then(function (user) {
-            Profit.getProfitTotal({
-                userId: user._id,
-                createTime: new RegExp(req.query.createTime)
-            }).then(function(totalProfit) {
-                    Profit.open().findPages({
-                            userId: user._id,
-                            createTime: new RegExp(req.query.createTime)
-                        }, (req.query.page ? req.query.page : 1))
-                        .then(function(obj) {
-                            res.render('lowerUserProfit', {
-                                title: '下级返利详情',
-                                user: user,
-                                profits: obj.results,
-                                pages: obj.pages,
-                                totalProfit: totalProfit
-                            });
-                        })
+            Recharge.open().findPages({
+                    userId: {$in: user.childrenId}
+                }, (req.query.page ? req.query.page : 1))
+                .then(function(obj) {
+                    res.render('lowerUserProfit', {
+                        title: '下级返利详情',
+                        user: user,
+                        profits: obj.results,
+                        pages: obj.pages
+                    });
+                }, function(error) {
+                    throw new Error('查询下级用户信息失败： ' + error)
                 })
         });
 });
@@ -482,23 +447,34 @@ router.get('/withdraw', function (req, res) {
 router.get('/withdraw/add', function (req, res) {
     User.open().findById(req.session.passport.user)
         .then(function (user) {
-            res.render('withdrawAdd', {
-                title: '申请提现',
-                user: user
-            });
+            if(User.isVip(user)){
+                res.render('withdrawAdd', {
+                    title: '申请提现',
+                    user: user
+                });
+            }else{
+                res.redirect('/user/recharge?msg=' + encodeURIComponent('非VIP会员，不具备提现资格！'));
+            }
         });
 });
 
 router.post('/withdraw/add', function (req, res) {
-    Withdraw.saveOne(req.body, req.session.passport.user)
-        .then(function(msg) {
-            if(msg) {
-                res.send(msg);
-            }else {
-                socketIO.emit('updateNav', {withdraw: 1});
-                res.redirect('/user/withdraw');
+    User.open().findById(req.session.passport.user)
+        .then(function (user) {
+            if(User.isVip(user)){
+                Withdraw.saveOne(req.body, user._id)
+                    .then(function(msg) {
+                        if(msg) {
+                            res.send(msg);
+                        }else {
+                            socketIO.emit('updateNav', {withdraw: 1});
+                            res.redirect('/user/withdraw');
+                        }
+                    })
+            }else{
+                res.redirect('/user/recharge?msg=' + encodeURIComponent('非VIP会员，不具备提现资格！'));
             }
-        })
+        });
 });
 
 module.exports = router;

@@ -46,18 +46,36 @@ User.extend({
         };
         return User.wrapToInstance(user);
     },
+    isVip: function(user) {
+        var vipTime = Date.parse(user.vipTime);
+        var nowTime = new Date().getTime();
+        return vipTime > nowTime;
+    },
     getSystemFunds: function() {
         return new Promise(function(resolve, reject) {
             User.open().find().then(function(results) {
-                var count = 0;
+                var totalFunds = 0;
+                var totalProfit = 0;
+                var totalCanWithdraw = 0;
+                var totalAlreadyWithdraw = 0;
                 results.forEach(function (result) {
-                    count += parseFloat(result.funds);
+                    totalFunds += parseFloat(result.funds);
+                    if(result.role != 'admin'){
+                        totalProfit += parseFloat(result.childrenProfit);
+                        totalCanWithdraw += parseFloat(result.canWithdraw);
+                        totalAlreadyWithdraw += parseFloat(result.alreadyWithdraw);
+                    }
                 });
-                resolve(count.toFixed(4));
+                resolve({
+                    totalFunds: totalFunds.toFixed(4),
+                    totalProfit: totalProfit.toFixed(4),
+                    totalCanWithdraw: totalCanWithdraw.toFixed(4),
+                    totalAlreadyWithdraw: totalAlreadyWithdraw.toFixed(4)
+                });
             })
         })
     },
-    createUser: function(userInfo, resolve, reject) {
+    createUser: function(userInfo) {
         return new Promise(function(resolve) {
             userInfo.password = bcrypt.hashSync(userInfo.password, bcrypt.genSaltSync(10));
             userInfo.vipTime = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -73,35 +91,39 @@ User.extend({
             User.open().findOne({username: 'admin'}).then(function (admin) {
                 //获取被删除用户
                 User.open().findById(id).then(function(delUser) {
-                    //如果存在父用户，则获取父用户
-                    if(delUser.parentId) {
-                        User.open().findById(delUser.parentId).then(function(parentUser) {
-                            //将被删除用户从父用户中移除
-                            var parent = User.wrapToInstance(parentUser);
-                            parent.removeChild(id);
-                        })
-                    }
-                    //如果存在子用户，则将被删除用户的所有子用户添加到平台管理员中
-                    if(delUser.childrenId.length > 0) {
-                        admin.childrenId = admin.childrenId.concat(delUser.childrenId);
-                        for(var i = 0; i < delUser.childrenId.length; i++) {
-                            User.open().updateById(delUser.childrenId[i], {
-                                $set: {
-                                    parentId: admin._id,
-                                    parentName: admin.username
-                                }
-                            });
-                        }
-                    }
+                    var adminChildren = [].concat(admin.childrenId, delUser.childrenId);
                     User.open().updateById(admin._id, {
                         $set: {
                             funds: (parseFloat(admin.funds) + parseFloat(delUser.funds)).toFixed(4),
-                            childrenId: admin.childrenId,
-                            childrenNum: admin.childrenId.length
+                            childrenProfit: (parseFloat(admin.childrenProfit) + parseFloat(delUser.childrenProfit)).toFixed(4),
+                            canWithdraw: (parseFloat(admin.canWithdraw) + parseFloat(delUser.canWithdraw)).toFixed(4),
+                            alreadyWithdraw: (parseFloat(admin.alreadyWithdraw) + parseFloat(delUser.alreadyWithdraw)).toFixed(4),
+                            childrenId: adminChildren,
+                            childrenNum: adminChildren.length
                         }
-                    });
-                    User.open().removeById(delUser._id);
-                    resolve();
+                    }).then(function() {
+                        //如果存在父用户，则获取父用户
+                        if(delUser.parentId) {
+                            User.open().findById(delUser.parentId).then(function(parentUser) {
+                                //将被删除用户从父用户中移除
+                                var parent = User.wrapToInstance(parentUser);
+                                parent.removeChild(id);
+                            })
+                        }
+                        //如果存在子用户，则将被删除用户的所有子用户添加到平台管理员中
+                        if(delUser.childrenId.length > 0) {
+                            for(var i = 0; i < delUser.childrenId.length; i++) {
+                                User.open().updateById(delUser.childrenId[i], {
+                                    $set: {
+                                        parentId: admin._id,
+                                        parentName: admin.username
+                                    }
+                                });
+                            }
+                        }
+                        User.open().removeById(delUser._id);
+                        resolve();
+                    })
                 })
             });
         })
@@ -143,17 +165,24 @@ User.include({
     },
     removeChild: function(id) {
         var self = this;
-        for(var i = 0; i < self.childrenId.length; i++) {
-            if(self.childrenId[i] == id) {
-                self.childrenId.splice(i, 1);
-                User.open().updateById(self._id, {
-                    $set: {
-                        childrenId: self.childrenId,
-                        childrenNum: self.childrenId.length
-                    }
-                });
+        return new Promise(function(resolve) {
+            var index;
+            for(var i = 0; i < self.childrenId.length; i++) {
+                if(self.childrenId[i] == id) {
+                    index = i;
+                    break;
+                }
             }
-        }
+            self.childrenId.splice(i, 1);
+            User.open().updateById(self._id, {
+                $set: {
+                    childrenId: self.childrenId,
+                    childrenNum: self.childrenId.length
+                }
+            }).then(function() {
+                resolve();
+            })
+        })
     }
 });
 

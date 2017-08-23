@@ -12,17 +12,6 @@ Profit.extend(db);
 Profit.extend({
     open: function() {
         return Profit.openCollection('Profit');
-    },
-    getProfitTotal: function(obj) {
-        return new Promise(function(resolve, reject) {
-            Profit.open().find(obj).then(function(results) {
-                var count = 0;
-                results.forEach(function (result) {
-                    count += parseFloat(result.price);
-                });
-                resolve(count.toFixed(4));
-            })
-        })
     }
 });
 

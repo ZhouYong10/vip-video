@@ -3,14 +3,6 @@
  */
 var Utils = require('utils');
 
-var Vue = require('vue');
-Vue.use(require('vue-validator'));
-
-new Vue({
-    el: '#searchForm'
-});
-
 $(function () {
     Utils.layPage();
-    Utils.breakText();
 });

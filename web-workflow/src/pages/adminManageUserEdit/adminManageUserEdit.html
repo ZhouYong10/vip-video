@@ -66,7 +66,11 @@
                                         充值金额
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info">￥ <%= user.funds %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/search/user/recharge?userId=<%= user._id %>">
+                                                ￥ <%= user.funds %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -74,7 +78,11 @@
                                         返给上级金额
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info">￥ <%= user.profitToParent %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/search/user/recharge?userId=<%= user._id %>">
+                                                ￥ <%= user.profitToParent %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -103,7 +111,11 @@
                                         上级
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.parentName %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/search/user/by/id?userId=<%= user.parentId %>">
+                                                <%= user.parentName %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -111,7 +123,11 @@
                                         下级/人
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info"><%= user.childrenNum %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/lowerUsers/of/user?userId=<%= user._id %>">
+                                                <%= user.childrenNum %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -119,7 +135,11 @@
                                         下级返现
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info">￥ <%= user.childrenProfit %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/search/user/children/profit?userId=<%= user._id %>">
+                                                ￥ <%= user.childrenProfit %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -127,7 +147,9 @@
                                         可提现金额
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info">￥ <%= user.canWithdraw %></p>
+                                        <p class="user-info">
+                                            ￥ <%= user.canWithdraw %>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">
@@ -135,7 +157,11 @@
                                         已提现金额
                                     </label>
                                     <div class="am-u-sm-8">
-                                        <p class="user-info">￥ <%= user.alreadyWithdraw %></p>
+                                        <p class="user-info">
+                                            <a href="/admin/search/withdraw/by/user/id?userId=<%= user._id %>">
+                                                ￥ <%= user.alreadyWithdraw %>
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="am-form-group">

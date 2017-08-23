@@ -59,6 +59,7 @@
                                         <th>金额</th>
                                         <th>之后金额</th>
                                         <th>充值天数</th>
+                                        <th>返给上级</th>
                                         <th>状态</th>
                                         <th>描述</th>
                                         <th>手动充值</th>
@@ -69,13 +70,18 @@
                                     <% for(var i = 0; i < recharges.length; i++){ %>
                                     <tr>
                                         <td><%= i + 1 %></td>
-                                        <td><%= recharges[i].username %></td>
+                                        <td>
+                                            <a href="/admin/search/user/by/id?userId=<%= recharges[i].userId %>">
+                                                <%= recharges[i].username %>
+                                            </a>
+                                        </td>
                                         <td><%= recharges[i].createTime %></td>
                                         <td><%= recharges[i].alipayId %></td>
                                         <td><%= recharges[i].userOldFunds %></td>
                                         <td><%= recharges[i].funds %></td>
                                         <td><%= recharges[i].userNowFunds %></td>
                                         <td><%= recharges[i].vipDays %></td>
+                                        <td><%= recharges[i].profitToParent %></td>
                                         <td><%= recharges[i].status %></td>
                                         <td><%= recharges[i].dec %></td>
                                         <td>

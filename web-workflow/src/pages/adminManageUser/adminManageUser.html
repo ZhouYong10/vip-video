@@ -72,7 +72,11 @@
                                         <td><%= users[i].createTime %></td>
                                         <td><%= users[i].roleName %></td>
                                         <td><%= users[i].username %></td>
-                                        <td><%= users[i].parentName %></td>
+                                        <td>
+                                            <a href="/admin/search/user/by/id?userId=<%= users[i].parentId %>">
+                                                <%= users[i].parentName %>
+                                            </a>
+                                        </td>
                                         <td>
                                             <a href="/admin/lowerUsers/of/user?userId=<%= users[i]._id %>">
                                                 <%= users[i].childrenNum %>

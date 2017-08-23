@@ -57,10 +57,6 @@ passport.use(new LocalStrategy({
       return done(null, false, '验证码错误！');
     }
   }
-
-    console.log(username,'username,11111111111111111')
-    console.log(password,'password,22222222222222222222')
-    console.log(req.body.securityCode,'securityCode,333333333333333333333')
   //实现用户名或邮箱登录
   //这里判断提交上的username是否含有@，来决定查询的字段是哪一个
   //var criteria = (username.indexOf('@') === -1) ? {username: username} : {email: username};

@@ -25,28 +25,11 @@
                 <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                     <div class="widget am-cf">
                         <div class="widget-head am-cf">
-                            <div class="widget-title  am-cf">文章列表</div>
+                            <div class="widget-title  am-cf"><%= title %></div>
                         </div>
                         <div class="widget-body  am-fr">
-                            <div id="searchForm" class="am-form am-form-inline">
-                                <validator name="search">
-                                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
-                                        <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
-                                            <form id="search" method="get" action="/user/search/lowerUser/profit">
-                                                <input id="rechargeTime" type="text" class="am-form-field am-input-sm am-radius"
-                                                       name="createTime" placeholder="点击选择消费日期" style="height:33px;"
-                                                       onclick="laydate({istime: false, format: 'YYYY-MM-DD'})"
-                                                       v-validate:createTime="{required: true}">
-                                            </form>
-                                        <span class="am-input-group-btn">
-                                            <button form="search" v-if="$search.valid"
-                                                    class="am-btn am-btn-default am-btn-success
-                                                    tpl-table-list-field am-icon-search"></button>
-                                        </span>
-                                        </div>
-                                    </div>
-                                </validator>
-                                <div class="totalProfit" style="float: right; padding-right: 12px;">总计： ￥<%= totalProfit %></div>
+                            <div class="am-form am-form-inline" style="padding-left: 16px;">
+                                总计： ￥<%= user.childrenProfit %>
                             </div>
 
                             <div class="am-u-sm-12 am-scrollable-horizontal">
@@ -56,6 +39,7 @@
                                         <th>#</th>
                                         <th>用户</th>
                                         <th>充值时间</th>
+                                        <th>充值金额</th>
                                         <th>返现金额</th>
                                     </tr>
                                     </thead>
@@ -64,9 +48,10 @@
                                     <% for(var i = 0; i < profits.length; i ++ ){ %>
                                     <tr class="<% if(profits[i].status == 'refund'){ %> am-danger <% } %>">
                                         <td><%= i + 1 %></td>
-                                        <td><%= profits[i].childName %></td>
+                                        <td><%= profits[i].username %></td>
                                         <td><%= profits[i].createTime %></td>
-                                        <td>￥ <%= profits[i].price %></td>
+                                        <td>￥ <%= profits[i].funds %></td>
+                                        <td>￥ <%= profits[i].profitToParent %></td>
                                     </tr>
                                     <% } %>
 

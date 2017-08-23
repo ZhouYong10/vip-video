@@ -122,6 +122,7 @@ Recharge.extend({
                                 alipayInfo.isRecharge = true;
                                 alipayInfo.status = '成功';
                                 alipayInfo.userNowFunds = (parseFloat(alipay.funds) + parseFloat(alipayInfo.userOldFunds)).toFixed(4);
+                                alipayInfo.profitToParent = (parseFloat(alipay.funds) * 0.2).toFixed(4);
                                 Recharge.open().updateById(alipay._id, {
                                     $set: alipayInfo
                                 }).then(function () {
@@ -167,9 +168,8 @@ Recharge.extend({
                             User.open().findById(alipay.userId).then(function(user) {
                                 //如果用户存在则直接充值
                                 if(user) {
-                                    var vipTime = Date.parse(user.vipTime);
-                                    var nowTime = new Date().getTime();
-                                    if(vipTime - nowTime > 0){
+                                    var vipTime;
+                                    if(User.isVip(user)){
                                         vipTime = moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss');
                                     }else{
                                         vipTime = moment().add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
@@ -196,6 +196,7 @@ Recharge.extend({
                                             status: '成功',
                                             funds: parseFloat(info.money),
                                             alipayTime: info.PayTime,
+                                            profitToParent: profitToParent,
                                             userNowFunds : (parseFloat(alipay.userOldFunds) + parseFloat(info.money)).toFixed(4)
                                         }}).then(function() {
                                             resolve();
@@ -218,9 +219,8 @@ Recharge.extend({
                     }).then(function (user) {
                         //如果用户存在则直接充值
                         if(user) {
-                            var vipTime = Date.parse(user.vipTime);
-                            var nowTime = new Date().getTime();
-                            if(vipTime - nowTime > 0){
+                            var vipTime;
+                            if(User.isVip(user)){
                                 vipTime = moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss');
                             }else{
                                 vipTime = moment().add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
@@ -252,6 +252,7 @@ Recharge.extend({
                                     vipDays: vipDays,
                                     isRecharge: true,
                                     status: '成功',
+                                    profitToParent: profitToParent,
                                     userNowFunds : (parseFloat(user.funds) + parseFloat(info.money)).toFixed(4)
                                 }).then(function () {
                                     resolve();

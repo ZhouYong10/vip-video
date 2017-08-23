@@ -8,7 +8,19 @@
             </div>
             <span class="user-panel-logged-in-text">
               <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
-              ￥<%= money %>
+              总充值：　￥<%= money.totalFunds %>
+            </span>
+             <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              总返利：　￥<%= money.totalProfit %>
+            </span>
+             <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              可提现：　￥<%= money.totalCanWithdraw %>
+            </span>
+             <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              已提现：　￥<%= money.totalAlreadyWithdraw %>
             </span>
             <a href="/admin/manage/user" class="tpl-user-panel-action-link active">
                 <span class="am-icon-pencil"></span> 用户管理

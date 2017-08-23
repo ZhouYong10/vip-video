@@ -148,10 +148,8 @@ router.get('/hand/recharge', function (req, res) {
             } else {
                 User.open().findById(record.userId)
                     .then(function (user) {
-
-                        var vipTime = Date.parse(user.vipTime);
-                        var nowTime = new Date().getTime();
-                        if(vipTime - nowTime > 0){
+                        var vipTime;
+                        if(User.isVip(user)){
                             vipTime = moment(user.vipTime).add('days', vipDays).format('YYYY-MM-DD HH:mm:ss');
                         }else{
                             vipTime = moment().add('days', vipDays).format('YYYY-MM-DD HH:mm:ss')
@@ -179,6 +177,7 @@ router.get('/hand/recharge', function (req, res) {
                                 isRecharge: true,
                                 status: '成功',
                                 vipDays: vipDays,
+                                profitToParent: profitToParent,
                                 userNowFunds: (parseFloat(record.userOldFunds) + parseFloat(msg.funds)).toFixed(4)
                             }}).then(function () {
                                 res.redirect(msg.url + '?date=' + new Date().getTime());
@@ -272,6 +271,20 @@ router.get('/search/user', function (req, res) {
         });
 });
 
+router.get('/search/user/by/id', function (req, res) {
+    User.open().findById(req.query.userId)
+        .then(function (user) {
+            res.render('adminManageUser', {
+                title: '用户管理',
+                money: req.session.systemFunds,
+                users: [user],
+                pages: 0
+            });
+        }, function (error) {
+            res.send('获取用户列表失败： ' + error);
+        });
+});
+
 router.get('/manage/user/edit', function(req, res) {
     User.open().findById(req.query.id)
         .then(function (user) {
@@ -310,6 +323,39 @@ router.get('/manage/user/del', function(req, res) {
     });
 });
 
+router.get('/search/user/children/profit', function (req, res) {
+    User.open().findById(req.query.userId)
+        .then(function (user) {
+            Recharge.open().findPages({
+                    userId: {$in: user.childrenId}
+                }, (req.query.page ? req.query.page : 1))
+                .then(function (obj) {
+                    res.render('adminRecharge', {
+                        title: '资金管理 / 充值记录 / ' + user.username + '的下级返现',
+                        money: req.session.systemFunds,
+                        recharges: obj.results,
+                        pages: obj.pages,
+                        path: '/admin/recharge'
+                    });
+                });
+        });
+});
+
+router.get('/search/withdraw/by/user/id', function (req, res) {
+    User.open().findById(req.query.userId)
+        .then(function (user) {
+            Withdraw.open().findPages({userId: user._id}, (req.query.page ? req.query.page : 1))
+                .then(function(obj) {
+                    res.render('adminWithdrawAlre', {
+                        title: '资金管理 / ' + user.username + '的提现记录',
+                        money: req.session.systemFunds,
+                        withdraws: obj.results,
+                        pages: obj.pages,
+                        path: '/admin/withdraw/already'
+                    });
+                })
+        });
+});
 
 router.get('/lowerUsers/of/user', function (req, res) {
     User.open().findById(req.query.userId)
@@ -317,19 +363,19 @@ router.get('/lowerUsers/of/user', function (req, res) {
             if(parent.childrenId.length > 0){
                 User.open().find({_id: {$in: parent.childrenId}})
                     .then(function(obj) {
-                        res.render('adminLowerUserOfUser', {
+                        res.render('adminManageUser', {
                             title: '用户管理 / ' + parent.username + '的下级用户',
                             money: req.session.systemFunds,
-                            users: obj
+                            users: obj,
+                            pages: 0
                         });
-                    }, function(error) {
-                        throw new Error('查询下级用户信息失败： ' + error)
                     })
             }else {
-                res.render('adminLowerUserOfUser', {
+                res.render('adminManageUser', {
                     title: '用户管理 / ' + parent.username + '的下级用户',
                     money: req.session.systemFunds,
-                    users: []
+                    users: [],
+                    pages: 0
                 });
             }
         }, function(error) {
