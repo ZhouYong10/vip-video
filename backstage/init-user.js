@@ -14,12 +14,6 @@ var initUsers = [User.new({
     vipTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     readme: true
-}), User.new({
-    username: '演示',
-    password: bcrypt.hashSync('yanshi', bcrypt.genSaltSync(10)),
-    vipTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-    createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-    readme: true
 })];
 
 
