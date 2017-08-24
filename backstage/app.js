@@ -63,6 +63,7 @@ passport.use(new LocalStrategy({
   var criteria = {username: username};
   User.open().findOne(criteria)
       .then(function (user) {
+          console.log(Utils.cipher(user._id + '', Utils.invitationKey), '=======================================');
         if (!user){
           return done(null, false, '用户名 ' + username + ' 不存在!');
         }
