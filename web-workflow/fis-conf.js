@@ -1,3 +1,4 @@
+
 /**
  * Created by Administrator on 2015/12/21.
  */
@@ -15,8 +16,8 @@ fis.match('::packager', {
 
 
 /*
-* deal with javascript
-* */
+ * deal with javascript
+ * */
 fis.set('project.fileType.text', 'es6');
 fis.match('/src/**/(*).{js,es6}', {
     isMod: true,
@@ -29,7 +30,6 @@ fis.match('/{src,static,test,mock}/**.es6', {
 });
 
 fis.match('/{src,static}/(**.{js,es6})', {
-    optimizer: fis.plugin('uglify-js'),
     release: '/static/js/$1'
 });
 
@@ -38,15 +38,14 @@ fis.match('/{mock,test}/(**.{js,es6})', {
 });
 
 /*
-* deal with stylesheet
-* */
+ * deal with stylesheet
+ * */
 fis.match('/{src,static}/**.scss', {
     parser: fis.plugin('node-sass'),
     rExt: '.css'
 });
 
 fis.match('/{src,static}/(**.{css,scss})', {
-    optimizer: fis.plugin('clean-css'),
     postprocessor: fis.plugin('autoprefixer', {
         "browsers": ["last 30 versions"],
         "cascade": true,
@@ -56,53 +55,33 @@ fis.match('/{src,static}/(**.{css,scss})', {
 });
 
 /*
-* deal with image
-* */
+ * deal with image
+ * */
 fis.match('/{src,static/images}/(**.{png,jpg,gif})', {
     //optimizer: fis.plugin('png-compressor'),
     release: '/static/images/$1'
 });
 
 /*
-*  deal with html
-* */
+ *  deal with html
+ * */
 fis.match('/src/**.html', {
     release: false
 });
 fis.match('/src/pages/**/(*.html)', {
-    release: '/$1',
-    useCache: false
+    release: '/$1'
 });
 
-fis.match('/{src,static,test,mock}/(**.{js,es6})', {
-        useHash: true
-    })
-    .match('/static/plugins/**.js', {
-        useHash: false
-    })
-    .match('/{src,static}/(**.{css,scss})', {
-        useHash: true,
-        optimizer: fis.plugin('clean-css'),
-        useSprite: true
-    })
-    .match('/static/plugins/**.css', {
-        useHash: false
-    })
-    .match('/{src,static}/(**.{png,jpg,gif})', {
-        useHash: true
-    });
-
-
 /*
-* deal with plugins
-* */
+ * deal with plugins
+ * */
 fis.match('/static/plugins/(**)', {
     release: '/static/$1'
 });
 
 /*
-* deploy
-* */
+ * deploy
+ * */
 fis.match('/{src,static}/**', {
     deploy: fis.plugin('local-deliver', {
         to: '../backstage/public'
@@ -115,32 +94,22 @@ fis.match('/src/pages/**.html', {
     })
 });
 
-fis.match('::packager', {
-    postpackager: fis.plugin('loader', {
-        allInOne: {
-            css: '/static/pak/${filepath}_aio.css',
-            js: '/static/pak/${filepath}_aio.js',
-            ignore: ['/static/plugins/**.js', '/static/plugins/**.css']
-        },
-        useInlineMap: true
-    }),
-    spriter: fis.plugin('csssprites')
-});
-
 /*
-* production environment
-* */
+ * production environment
+ * */
 fis.media('prod')
-    .match('/{src,static,test,mock}/(**.{js,es6})', {
-        useHash: true,
+    .match('/{src,static}/(**.{js,es6})', {
         optimizer: fis.plugin('uglify-js')
+    })
+    .match('/{src,static,test,mock}/(**.{js,es6})', {
+        useHash: true
     })
     .match('/static/plugins/**.js', {
         useHash: false
     })
     .match('/{src,static}/(**.{css,scss})', {
-        useHash: true,
         optimizer: fis.plugin('clean-css'),
+        useHash: true,
         useSprite: true
     })
     .match('/static/plugins/**.css', {
@@ -148,6 +117,9 @@ fis.media('prod')
     })
     .match('/{src,static}/(**.{png,jpg,gif})', {
         useHash: true
+    })
+    .match('/src/pages/**/(*.html)', {
+        useCache: false
     })
     //.match('/src/pages/**.html', {
     //    optimizer: fis.plugin('htmlmin', {
