@@ -81,8 +81,6 @@ passport.use(new LocalStrategy({
 
 function login(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
-      console.log('密码： ' + bcrypt.hashSync('vip@video@3.141592653', bcrypt.genSaltSync(10)));
-      console.log('推广链接： ' + Utils.cipher(user._id + '', Utils.invitationKey));
     if (err) {
       return next(err);
     }
@@ -142,10 +140,10 @@ app.use(session({secret: 'need change'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 /*
- * 易支付 vip电影会员
+ * 易支付
  * */
-var Recharge = require('./models/Recharge');
 app.get('/yzf/recharge', function (req, res) {
     var info = req.query;
     if(info.key === 'vip@chong@zhi@3.1415'){
