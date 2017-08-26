@@ -212,6 +212,8 @@ app.post('/check/securityCode', function (req, res) {
 
 app.post('/sign/in', function (req, res, next) {
     var info = req.body;
+    console.log(info, '0000000000000000000000000000000000000');
+    console.log(req.query, '999999999999999999999999999999999999');
     info.username = info.username.replace(/(^\s*)|(\s*$)/g, "");
     if(!info.readme) {
         res.send({
