@@ -81,7 +81,6 @@ passport.use(new LocalStrategy({
 
 function login(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
-      console.log('222222222推广链接： ' + Utils.cipher(user._id + '', Utils.invitationKey));
     if (err) {
       return next(err);
     }
@@ -212,8 +211,6 @@ app.post('/check/securityCode', function (req, res) {
 
 app.post('/sign/in', function (req, res, next) {
     var info = req.body;
-    console.log(info, '0000000000000000000000000000000000000');
-    console.log(req.query, '999999999999999999999999999999999999');
     info.username = info.username.replace(/(^\s*)|(\s*$)/g, "");
     if(!info.readme) {
         res.send({
@@ -275,12 +272,9 @@ app.post('/sign/in', function (req, res, next) {
             }
             if (info.invitation) {
                 try{
-                    console.log(info.invitation, '1111111111111111111111111111');
                     var parentId = Utils.decipher(info.invitation, Utils.invitationKey);
-                    console.log(parentId,'======================================')
                     User.open().findById(parentId)
                         .then(function (result) {
-                            console.log(result, '22222222222222222222222222222');
                             if(result) {
                                 User.createUser({
                                     username: info.username,
