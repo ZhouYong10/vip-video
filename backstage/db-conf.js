@@ -5,6 +5,6 @@
 module.exports = {
     host: 'localhost',
     port: '27017',
-    dbName: 'vip-video'
+    dbName: 'brush-flow'
 };
 

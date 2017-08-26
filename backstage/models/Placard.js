@@ -25,7 +25,7 @@ Placard.extend({
 });
 
 Placard.open = function() {
-    return Placard.openCollection('Placard');
+    return Placard.openCollection('VipPlacard');
 };
 
 Placard.include({

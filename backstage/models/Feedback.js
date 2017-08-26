@@ -14,7 +14,7 @@ Feedback.extend(dbWrap);
 
 Feedback.extend({
     open: function() {
-        return Feedback.openCollection('Feedback');
+        return Feedback.openCollection('VipFeedback');
     },
     createFeedback: function(feedback) {
         feedback.createTime = moment().format('YYYY-MM-DD HH:mm:ss');

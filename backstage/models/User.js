@@ -18,7 +18,7 @@ User.extend(dbWrap);
 
 User.extend({
     open: function() {
-        return User.openCollection('User');
+        return User.openCollection('VipUser');
     },
     new: function(info) {
         var user = {

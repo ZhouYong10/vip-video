@@ -16,7 +16,7 @@ Recharge.extend(db);
 
 Recharge.extend({
     open: function() {
-        return Recharge.openCollection('Recharge');
+        return Recharge.openCollection('VipRecharge');
     },
     vipDays: function(funds) {
         var vipDays = 0;

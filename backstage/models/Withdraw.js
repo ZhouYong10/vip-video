@@ -16,7 +16,7 @@ var Withdraw = new Class();
 Withdraw.extend(db);
 
 Withdraw.open = function() {
-    return Withdraw.openCollection('Withdraw');
+    return Withdraw.openCollection('VipWithdraw');
 };
 
 Withdraw.extend({

@@ -28,9 +28,6 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-var Cleaners = require('./models/Cleaners');
-Cleaners.timeOfDay();
-
 passport.serializeUser(function (user, done) {
   done(null, user._id);
 });
@@ -143,10 +140,10 @@ app.use(session({secret: 'need change'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-var Recharge = require('./models/Recharge');
 /*
- * 易支付
+ * 易支付 vip电影会员
  * */
+var Recharge = require('./models/Recharge');
 app.get('/yzf/recharge', function (req, res) {
     var info = req.query;
     if(info.key === 'vip@chong@zhi@3.1415'){

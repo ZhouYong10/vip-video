@@ -5,8 +5,6 @@ var User = require('../models/User');
 var Feedback = require('../models/Feedback');
 var Recharge = require('../models/Recharge');
 var Withdraw = require('../models/Withdraw');
-var Profit = require('../models/Profit');
-var Consume = require('../models/Consume');
 var Utils = require('../models/Utils');
 var router = require('express').Router();
 var request = require('request');
@@ -155,41 +153,6 @@ router.get('/search/recharge', function (req, res) {
             }, function(errMsg) {
                 res.send(errMsg);
             });
-        });
-});
-
-router.get('/consume/history', function (req, res) {
-    User.open().findById(req.session.passport.user)
-        .then(function (user) {
-            Consume.open().findPages({
-                userId: user._id
-            }, (req.query.page ? req.query.page : 1))
-                .then(function(obj) {
-                    res.render('consumeHistory', {
-                        title: '消费记录',
-                        user: user,
-                        orders: obj.results,
-                        pages: obj.pages
-                    })
-                })
-        });
-});
-
-router.get('/search/consume', function (req, res) {
-    User.open().findById(req.session.passport.user)
-        .then(function (user) {
-            Consume.open().findPages({
-                    userId: user._id,
-                    createTime: new RegExp(req.query.createTime)
-                }, (req.query.page ? req.query.page : 1))
-                .then(function(obj) {
-                    res.render('consumeHistory', {
-                        title: '消费记录',
-                        user: user,
-                        orders: obj.results,
-                        pages: obj.pages
-                    })
-                })
         });
 });
 
