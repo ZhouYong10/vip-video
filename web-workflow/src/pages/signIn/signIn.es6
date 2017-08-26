@@ -29,6 +29,9 @@ new Vue({
             layer.closeAll('tips');
         },
         onSignIn: function() {  //使用es6语法,获取不到相应的数据,例如this.username,得不到数据.
+            console.log(location.search,'---------------------------')
+            console.log(location.search.split('=')[1],'---------------------------')
+            console.log(location.search.split('=')[1].split('&')[0],'---------------------------')
             this.$http.post('/sign/in', {
                 invitation: location.search.split('=')[1].split('&')[0],
                 username: this.username,
