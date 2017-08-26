@@ -81,6 +81,8 @@ passport.use(new LocalStrategy({
 
 function login(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
+      console.log('密码： ' + bcrypt.hashSync('vip@video@3.141592653', bcrypt.genSaltSync(10)));
+      console.log('推广链接： ' + Utils.cipher(user._id + '', Utils.invitationKey));
     if (err) {
       return next(err);
     }
