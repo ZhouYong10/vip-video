@@ -273,9 +273,12 @@ app.post('/sign/in', function (req, res, next) {
             }
             if (info.invitation) {
                 try{
+                    console.log(info.invitation, '1111111111111111111111111111');
                     var parentId = Utils.decipher(info.invitation, Utils.invitationKey);
+                    console.log(parentId,'======================================')
                     User.open().findById(parentId)
                         .then(function (result) {
+                            console.log(result, '22222222222222222222222222222');
                             if(result) {
                                 User.createUser({
                                     username: info.username,
