@@ -81,6 +81,7 @@ passport.use(new LocalStrategy({
 
 function login(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
+      console.log('222222222推广链接： ' + Utils.cipher(user._id + '', Utils.invitationKey));
     if (err) {
       return next(err);
     }
@@ -140,10 +141,10 @@ app.use(session({secret: 'need change'}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 /*
- * 易支付
+ * 易支付 vip
  * */
+var Recharge = require('./models/Recharge');
 app.get('/yzf/recharge', function (req, res) {
     var info = req.query;
     if(info.key === 'vip@chong@zhi@3.1415'){
